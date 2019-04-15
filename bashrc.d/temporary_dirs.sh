@@ -90,7 +90,6 @@ name() {
     # Delete the name
     newline=$(echo "$line" | awk '{ print $1 " " $2; }')
     sed -ib -e "s;^$line;$newline;" ~/.temporary_test_dirs
-    rm -f .preserve
   elif [[ -n "$1" ]]; then
     # Rewrite the name
     newline=$(echo "$line" | awk '{ print $1 " " $2; }')
@@ -114,17 +113,23 @@ cdltmp() {
 lstmp() {
   # Short python program to parse and format nicely
   python - <<'EOF'
+# coding: utf-8
 import os
 data = [x.strip().split() for x in open(os.path.expanduser("~/.temporary_test_dirs")).readlines()]
 data = [x + [None, "", ""][len(x):] for x in data]
 lens = map(lambda x: max(len(y) for y in x), zip(*data))
-for i, (dir, dat, nam) in zip(reversed(range(len(data))), data):
+locked = [os.path.isfile(os.path.join(x[0], ".preserve")) for x in data]
+for i, (dir, dat, nam), loc in zip(reversed(range(len(data))), data, locked):
   if not os.path.isdir(dir):
     continue
-  print " ".join(["\033[1;31m{0:2d}\033[0m".format(i),
-                "\033[1;32m"+nam.ljust(lens[2])+"\033[0m",
-                dat.ljust(lens[1]),
-                "\033[37m"+dir.ljust(lens[0])+"\033[0m"])
+  parts = ["\033[1;31m{0:2d}\033[0m".format(i)]
+  parts.append("\033[1;32m"+nam.ljust(lens[2])+"\033[0m")
+  if any(locked):
+    parts.append(u"🔒".encode("utf-8") if loc else "  ")
+  parts.append(dat.ljust(lens[1]))
+  parts.append("\033[37m"+dir.ljust(lens[0])+"\033[0m")
+  print " ".join(parts)
+  print(repr(parts))
 EOF
 }
 
