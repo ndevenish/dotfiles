@@ -129,7 +129,6 @@ for i, (dir, dat, nam), loc in zip(reversed(range(len(data))), data, locked):
   parts.append(dat.ljust(lens[1]))
   parts.append("\033[37m"+dir.ljust(lens[0])+"\033[0m")
   print " ".join(parts)
-  print(repr(parts))
 EOF
 }
 
