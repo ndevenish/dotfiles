@@ -1,26 +1,31 @@
-remove_temps() {
-  if [[ -f ~/.temporary_test_dirs ]]; then
-    for test in $(cat ~/.temporary_test_dirs); do
-      if [[ "$(pwd)" == "$test" ]]; then
-        echo "Not removing current directory"
-        PRESERVE=$test
-      else
-        if [[ -d $test ]]; then
-          echo "Removing $test"
-          rm --preserve-root -rfI $test
-        fi
-      fi
-    done
-    rm ~/.temporary_test_dirs
-    if [[ -n "$PRESERVE" ]]; then
-      echo "$PRESERVE" >> ~/.temporary_test_dirs
-    fi
-  fi
-}
+#!/bin/bash
+
+# Disable for now, with .preserve and names
+#remove_temps() {
+#  if [[ -f ~/.temporary_test_dirs ]]; then
+#    while read -r line_entry
+#    do
+#      test=$(echo "line_entry" | awk '{ print $1; })
+#      if [[ "$(pwd)" == "$test" ]]; then
+#        echo "Not removing current directory"
+#        PRESERVE=$test
+#      else
+#        if [[ -d $test ]]; then
+#          echo "Removing $test"
+#          echo rm --preserve-root -rfI $test
+#        fi
+#      fi
+#    done < ~/.temporary_test_dirs
+#    rm ~/.temporary_test_dirs
+#    if [[ -n "$PRESERVE" ]]; then
+#      echo "$PRESERVE" >> ~/.temporary_test_dirs
+#    fi
+#  fi
+#}
 
 mktmp() {
-  cd $(mktemp --tmpdir=/dls/tmp/mep23677 -d)
-  echo $(pwd) $(date -u +"%Y-%m-%dT%H:%M:%S") >> ~/.temporary_test_dirs
+  cd "$(mktemp --tmpdir=/dls/tmp/mep23677 -d)" || return 1
+  echo "$(pwd) $(date -u +"%Y-%m-%dT%H:%M:%S")" >> ~/.temporary_test_dirs
 }
 
 cdtmp() {
@@ -31,7 +36,16 @@ cdtmp() {
   elif [[ -n "$1" ]]; then
     # Passed something not a number - a whole name?
     # Work out which line (from the end of the file) has this string
-    echo "Named folders not yet implemented"
+    dirs=$(awk "\$3 == \"$1\"" ~/.temporary_test_dirs)
+    if [[ $(echo "$dirs" | wc -l) -gt 1 ]]; then
+      echo "Error: More than one result matches"
+      return 1
+    elif [[ -n "$dirs" ]]; then
+      cd "$(echo "$dirs" | awk '{ print $1; }')" || return 1
+    else
+      echo "Error: Could not find temporary dir '$1'"
+      return 1
+    fi
     return
   else
     mktmp
@@ -46,7 +60,7 @@ cdtmp() {
     if [[ ! -d $last_temp ]]; then
       echo "Could not find $last_temp"
     else
-      cd $last_temp
+      cd "$last_temp" || return 1
     fi
   fi
 }
