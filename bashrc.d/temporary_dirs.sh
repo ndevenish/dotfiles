@@ -24,7 +24,13 @@
 #}
 
 mktmp() {
-  cd "$(mktemp --tmpdir=/dls/tmp/mep23677 -d)" || return 1
+  # Detect DLS filesystem layout
+  if [[ -d /dls/tmp/mep23677 ]]; then
+  # if mktemp --help 2>&1 > /dev/null; then
+    cd "$(mktemp --tmpdir=/dls/tmp/mep23677 -d)" || return 1
+  else
+    cd "$(mktemp -d)"
+  fi
   echo "$(pwd) $(date -u +"%Y-%m-%dT%H:%M:%S")" >> ~/.temporary_test_dirs
 }
 
