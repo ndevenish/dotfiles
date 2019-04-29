@@ -51,8 +51,21 @@ cdd() {
   build=$(_find_dials_build)
   if [[ -z "${build}" ]]; then
     echo "No dials distribution active"
+    return 1
   else
     cd ${build}
+  fi
+}
+
+dmake() {
+  build=$(_find_dials_build)
+  if [[ -z "${build}" ]]; then
+    echo "No dials distribution active"
+    return 1
+  else
+    pushd ${build}
+    make
+    popd
   fi
 }
 
