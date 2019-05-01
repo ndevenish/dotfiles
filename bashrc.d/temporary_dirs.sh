@@ -1,5 +1,18 @@
 #!/bin/bash
 
+# Temporary directory management and jumping
+#
+# Gives the following primary commands:
+#
+#   cdtmp   Jumps to a new, or existing temporary folder, depending on args
+#   lstmp   Lists temporary folders that still exist
+#   name    Manage naming of temporary folders
+#
+# Along with other commands:
+#   mktmp   Creates a new temporary folder and echos the name
+#   cdltmp  Jumps to the last created temporary folder
+#
+
 # Disable for now, with .preserve and names
 #remove_temps() {
 #  if [[ -f ~/.temporary_test_dirs ]]; then
@@ -29,12 +42,27 @@ mktmp() {
   # if mktemp --help 2>&1 > /dev/null; then
     cd "$(mktemp --tmpdir=/dls/tmp/mep23677 -d)" || return 1
   else
-    cd "$(mktemp -d)"
+    cd "$(mktemp -d)" || return 1
   fi
   echo "$(pwd) $(date -u +"%Y-%m-%dT%H:%M:%S")" >> ~/.temporary_test_dirs
 }
 
+########################################################################
+_cdtmp_help="
+Usage:  cdtmp
+        cdtmp [<NAME> | <NUMBER>]
+        cdtmp [-h | --help]
+
+If no arguments, then cds to a new temporary folder.
+
+If <NAME> or <NUMBER> is provided, jump to the matching temporary folder
+associated with that name or number.
+" ######################################################################
 cdtmp() {
+  if [[ $1 == '-h' || $1 == '--help' ]]; then
+    echo "$_cdtmp_help" | tail -n +2 | sed '$ d'
+    return
+  fi
   # Have we been passed an integer line?
   if [[ $1 =~ ^-?[0-9]+$ ]]; then
     # We've been passed an integer temporary number
@@ -72,21 +100,27 @@ cdtmp() {
 }
 
 ########################################################################
-# Get or set the name of a current temporary directory
-#
-# Usage: name [-d || <NAME>]
-#
-# Options:
-#     -d      The name will be removed instead of set
-#
-# Arguments:
-#     <NAME>  The new name to set for the current folder
-#
-# The current directory must be listed in the temporary folder
-# file. Setting a name will also set up a .preserve file, for
-# filesystems that are regularly cleaned.
-########################################################################
+_name_help="
+Get or set the name of a current temporary directory
+
+Usage: name [-d || <NAME>]
+
+Options:
+    -d          The name will be removed instead of set
+    -h, --help  Show this message
+
+Arguments:
+    <NAME>  The new name to set for the current folder
+
+The current directory must be listed in the temporary folder
+file. Setting a name will also set up a .preserve file, for
+filesystems that are regularly cleaned.
+"#######################################################################
 name() {
+  if [[ $1 == '-h' || $1 == '--help' ]]; then
+    echo "$_name_help" | tail -n +2 | sed '$ d'
+    return
+  fi
   line=$(grep -e "^$(pwd)" ~/.temporary_test_dirs)
   if [[ -z "$line" ]]; then
     echo "Error: Not in listed temporary folder"
