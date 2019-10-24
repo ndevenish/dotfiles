@@ -30,3 +30,8 @@ if has("autocmd")
 endif
 
 let g:indentLine_char = '▏'
+
+au BufRead,BufNewFile SConscript set filetype=python
+
+" set background=dark
+
