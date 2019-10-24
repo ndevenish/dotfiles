@@ -16,9 +16,9 @@ autocmd BufWinLeave * call clearmatches()
 let &colorcolumn="73,80,".join(range(100,999),",")
 
 set expandtab
-set tabstop=2
-set softtabstop=2
-set shiftwidth=2
+set tabstop=4
+set softtabstop=4
+set shiftwidth=4
 
 if has("autocmd")
   " If the filetype is Makefile then we need to use tabs

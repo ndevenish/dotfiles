@@ -34,7 +34,7 @@ ssd() {
     else
         echo "Outside diamond, connecting via nx-staff"
         # shellcheck disable=SC2088
-        ssh -t mep23677@nx-staff.diamond.ac.uk ssh -i '~/.ssh/id_rsa_internal' "$@"
+        ssh -t mep23677@nx-staff.diamond.ac.uk ssh -Yi '~/.ssh/id_rsa_internal' "$@"
     fi
 }
 
