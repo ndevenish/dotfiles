@@ -262,9 +262,9 @@ dmake() {
     echo "No dials distribution active"
     return 1
   else
-    pushd ${build}
-    make
-    popd
+    ( cd ${build}
+      make
+    )
   fi
 }
 

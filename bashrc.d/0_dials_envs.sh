@@ -30,7 +30,7 @@ setup_dials() {
     cd $OLD_DIR
   elif [[ -f $SETUP_DIR/setpaths.sh  ]]; then
     source $SETUP_DIR/setpaths.sh
-    export PATH=$SETUP_DIR/../base/bin:$PATH
+#    export PATH=$SETUP_DIR/../base/bin:$PATH
   fi
   echo $SETUP_DIR > ~/.last_dials
   export DIALS_DIST=${SETUP_DIR}
@@ -66,17 +66,6 @@ cdd() {
   fi
 }
 
-dmake() {
-  build=$(_find_dials_build)
-  if [[ -z "${build}" ]]; then
-    echo "No dials distribution active"
-    return 1
-  else
-    pushd ${build}
-    make
-    popd
-  fi
-}
 
 cdm() {
   if [[ -z "${DIALS_DIST}" ]]; then
