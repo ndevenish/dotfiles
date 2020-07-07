@@ -218,8 +218,10 @@ activate_libtbx_dist() {
         cd $SETUP_DIR
         source $SETUP_DIR/setup.sh
         cd $OLD_DIR
-    elif [[ -f $SETUP_DIR/setpaths.sh  ]]; then
+    elif [[ -f $SETUP_DIR/setpaths.sh && -z "$(grep "DIALS environment has changed" "${SETUP_DIR}/setpaths.sh")" ]]; then
         source $SETUP_DIR/setpaths.sh
+    else
+        export PATH="${SETUP_DIR}/bin:${PATH}"
     fi
     echo $SETUP_DIR > ~/.last_dials
     export DIALS_DIST=${SETUP_DIR}
