@@ -202,7 +202,8 @@ activate_libtbx_dist() {
     # Add the base install to the active PATH
     # Doing this *might* cause conflicts
     if [[ -d $SETUP_DIR/../conda_base ]]; then
-        export PATH=$SETUP_DIR/../conda_base/bin:$PATH
+        # export PATH=$SETUP_DIR/../conda_base/bin:$PATH
+        conda activate $SETUP_DIR/../conda_base
         export _DIST_REMOVE_PATH=$SETUP_DIR/../conda_base/bin
     elif [[ -d $SETUP_DIR/../base ]]; then
         export PATH=$SETUP_DIR/../base/bin:$PATH
