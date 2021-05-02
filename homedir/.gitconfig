@@ -1,0 +1,21 @@
+[alias]
+	st = status
+	ci = commit
+	co = checkout
+	b = branch
+	d = diff
+	dc = diff --cached
+[user]
+	name = Nicholas Devenish
+	email = ndevenish@gmail.com
+[filter "lfs"]
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+	clean = git-lfs clean -- %f
+[init]
+	templateDir = /Users/nickd/.git-template
+	defaultBranch = main
+[pull]
+	ff = only
+
