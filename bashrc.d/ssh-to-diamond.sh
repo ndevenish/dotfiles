@@ -20,6 +20,19 @@ _is_private_ip() {
     return 1
 }
 
+inside_diamond() {
+  if command -v getent >/dev/null; then
+      nx_addr=$(getent hosts nx-staff.diamond.ac.uk | awk '{ print $1 }')
+  elif command -v python >/dev/null; then
+      nx_addr=$(python -c 'import socket; print([x[-1][0] for x in socket.getaddrinfo("nx-staff.diamond.ac.uk", 0)][0])')
+  fi
+
+  if is_private_ip ${nx_addr}; then
+    return 0
+  fi
+  return 1
+}
+
 ssd() {
     if command -v getent >/dev/null; then
         nx_addr=$(getent hosts nx-staff.diamond.ac.uk | awk '{ print $1 }')

@@ -1,4 +1,5 @@
 
+return
 
 _dirdb() {
     print_help() { cat <<EOF
