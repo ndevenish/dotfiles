@@ -25,12 +25,19 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
         echo "${R}Error: Cannot find python - required on OSX for abspath${NC}"
         exit 1
     fi
+    function readlink_resolve() {
+        readlink "$@"
+    }
     function abspath() {
         "$python" -c "import os, sys; print(os.path.abspath(sys.argv[1]))" "$@"
     }
 else
-    alias readlink="readlink -f"
-    alias abspath="readlink -f"
+    function readlink_resolve() {
+        readlink -f "$@"
+    }
+    function abspath() {
+        readlink -f "$@"
+    }
 fi
 
 BD="$(printf "\033[1m")"
@@ -59,7 +66,7 @@ for item in "${DIR}"/homedir/*; do
         echo "${G}New Link$NC"
     elif [[ -L "$link" ]]; then
         # Already a symbolic link - check it points to this
-        _exist_link="$(readlink "$link")"
+        _exist_link="$(readlink_resolve "$link")"
         if [[ "$(abspath "$_exist_link")" == "$item" ]]; then
             echo "${G}Existing Link$NC"
         else
