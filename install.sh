@@ -105,7 +105,9 @@ export PATH=$PATH:'"$DIR"'/bin
 
 
 # Try and find an existing file with this itegration block
-if ! _init_file=$(grep -slm1 "# >>> .dotfiles integration >>>" "${_all_inits[@]}" 2>/dev/null) ; then
+# (grep will exit with error even if it found some results)
+_init_file="$(grep -slm1 "# >>> .dotfiles integration >>>" "${_all_inits[@]}" 2>/dev/null)" || true
+if [[ -z "$_init_file" ]]; then
     echo "    No existing integration"
     # Find the first init file in our list that exists
     for _init_file in "${_all_inits[@]}"; do
@@ -118,9 +120,9 @@ if ! _init_file=$(grep -slm1 "# >>> .dotfiles integration >>>" "${_all_inits[@]}
         echo "${R}Error: Could not find an init file to use from:"
         echo "${_all_inits[@]}"
         echo "$NC"
-        exit 1
     fi
     echo "    Found $B~${_init_file#$HOME}$NC for injection"
+    exit 1
     echo "$init_block" >> "$_init_file"
     echo "    Injected!"
 
