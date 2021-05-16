@@ -105,7 +105,7 @@ export PATH=$PATH:'"$DIR"'/bin
 
 
 # Try and find an existing file with this itegration block
-if ! _init_file=$(grep -lm1 "# >>> .dotfiles integration >>>" "${_all_inits[@]}" 2>/dev/null) ; then
+if ! _init_file=$(grep -slm1 "# >>> .dotfiles integration >>>" "${_all_inits[@]}" 2>/dev/null) ; then
     echo "    No existing integration"
     # Find the first init file in our list that exists
     for _init_file in "${_all_inits[@]}"; do
