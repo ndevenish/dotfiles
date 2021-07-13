@@ -35,3 +35,6 @@ au BufRead,BufNewFile SConscript set filetype=python
 
 " set background=dark
 
+filetype plugin indent on
+
+let g:rustfmt_autosave = 1

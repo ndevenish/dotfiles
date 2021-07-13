@@ -122,7 +122,6 @@ if [[ -z "$_init_file" ]]; then
         echo "$NC"
     fi
     echo "    Found $B~${_init_file#$HOME}$NC for injection"
-    exit 1
     echo "$init_block" >> "$_init_file"
     echo "    Injected!"
 
