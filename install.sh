@@ -83,6 +83,9 @@ for item in "${DIR}"/homedir/*; do
             echo "${R}File exists and does not match - cannot relink${NC}"
             FAIL=$((FAIL + 1))
         fi
+    elif [[ -d "$link" ]]; then
+        echo "${R}Error: Target directory exists. Remove or merge manually.$NC"
+        FAIL=$((FAIL + 1))
     else
         echo "${R}Unknown error: Cannot handle $link$NC"
         FAIL=$((FAIL + 1))
