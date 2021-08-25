@@ -8,7 +8,7 @@ bind -x '"\C-x1": __fzf_history';
 
 __fzf_history ()
 {
-__ehc $(cat ~/.fullhistory | fzf --tac --with-nth 3.. -n 4.. --tiebreak=index | perl -ne 'm/^\s*([0-9]+)/ and print "!$1"')
+__ehc $(cat ~/.fullhistory | fzf --no-sort --tac --with-nth 3.. -n 4.. --tiebreak=index | perl -ne 'm/^\s*([0-9]+)/ and print "!$1"')
 }
 
 __ehc()
