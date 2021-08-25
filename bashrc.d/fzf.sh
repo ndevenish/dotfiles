@@ -1,6 +1,5 @@
 
 if ! command -v fzf >/dev/null 2>&1; then
-    echo "No fzf"
     return
 fi
 

@@ -19,3 +19,9 @@
 [pull]
 	ff = only
 
+[pager]
+	log = /opt/homebrew/Cellar/git/2.32.0_1/share/git-core/contrib/diff-highlight/diff-highlight | less
+	show = /opt/homebrew/Cellar/git/2.32.0_1/share/git-core/contrib/diff-highlight/diff-highlight | less
+	diff = /opt/homebrew/Cellar/git/2.32.0_1/share/git-core/contrib/diff-highlight/diff-highlight | less
+[interactive]
+	diffFilter = /opt/homebrew/Cellar/git/2.32.0_1/share/git-core/contrib/diff-highlight/diff-highlight
