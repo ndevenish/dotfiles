@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 
 if ! command -v fzf >/dev/null 2>&1; then
     return
@@ -8,7 +9,7 @@ bind -x '"\C-x1": __fzf_history';
 
 __fzf_history ()
 {
-__ehc $(cat ~/.fullhistory | fzf --no-sort --tac --with-nth 3.. -n 4.. --tiebreak=index | perl -ne 'm/^\s*([0-9]+)/ and print "!$1"')
+__ehc "$(tail -r ~/.fullhistory | fzf --with-nth 3.. -n 2.. --tiebreak=index --preview 'echo {} | cut -d" " -f 4-' --preview-window=up,3,wrap --bind change:top | perl -ne 'm/^\s*([0-9]+)/ and print "!$1"')"
 }
 
 __ehc()
