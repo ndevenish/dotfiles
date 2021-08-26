@@ -9,7 +9,10 @@ bind -x '"\C-x1": __fzf_history';
 
 __fzf_history ()
 {
-__ehc "$(tail -r ~/.fullhistory | fzf --with-nth 3.. -n 2.. --tiebreak=index --preview 'echo {} | cut -d" " -f 4-' --preview-window=up,3,wrap --bind change:top | perl -ne 'm/^\s*([0-9]+)/ and print "!$1"')"
+    __ehc "$(tail -r ~/.fullhistory \
+        | fzf --with-nth 3.. -n 2.. --tiebreak=index --preview 'echo {} | cut -d" " -f 4-' --preview-window=up,3,wrap --bind change:top \
+        | cut -d" " -f 4- \
+        | sed 's/[ \t]*$//')"
 }
 
 __ehc()
