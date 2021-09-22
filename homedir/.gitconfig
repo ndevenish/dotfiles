@@ -5,6 +5,8 @@
 	b = branch
 	d = diff
 	dc = diff --cached
+	cia = commit --amend
+	loggo = log --graph --oneline
 [user]
 	name = Nicholas Devenish
 	email = ndevenish@gmail.com
