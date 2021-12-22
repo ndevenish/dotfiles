@@ -105,6 +105,19 @@ for item in "${DIR}"/homedir/*; do
     fi
 done
 
+if [[ ! -f ~/.gitconfig-local ]]; then
+    echo -e "\nCreating $B.gitconfig-local$NC"
+    touch ~/.gitconfig-local
+    echo "[init]
+    templateDir = $HOME/.git-template
+    " > ~/.gitconfig-local
+    echo "    done."
+else
+    echo -e "\n$B.gitconfig-local$NC already exists, not recreating"
+fi
+
+
+
 echo -e "\nInjecting/Updating bash startup script"
 
 # All target files to consider for initialization
