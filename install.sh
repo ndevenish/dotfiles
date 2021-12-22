@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# Check if we are sourced
+(return 0 2>/dev/null) && sourced=true || sourced=false
+if [[ $sourced == true ]]; then
+    echo "Error: Installation script must be explicitly run, not sourced"
+    return 1
+fi
+
 set -eu
 # Explicitly handling hidden files here
 shopt -s dotglob
