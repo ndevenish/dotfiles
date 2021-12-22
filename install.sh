@@ -95,7 +95,7 @@ done
 echo -e "\nInjecting/Updating bash startup script"
 
 # All target files to consider for initialization
-_all_inits=(~/.bash_profile ~/.bashrc_local ~/.profile ~/.bashrc)
+_all_inits=(~/.bash_profile ~/.bashrc_local ~/.bashrc ~/.profile)
 
 # shellcheck disable=SC2016
 init_block='# >>> .dotfiles integration >>>
