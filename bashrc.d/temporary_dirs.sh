@@ -157,7 +157,7 @@ lstmp() {
 import os
 data = [x.strip().split() for x in open(os.path.expanduser("~/.temporary_test_dirs")).readlines()]
 data = [x + [None, "", ""][len(x):] for x in data]
-lens = map(lambda x: max(len(y) for y in x), zip(*data))
+lens = list(map(lambda x: max(len(y) for y in x), zip(*data)))
 locked = [os.path.isfile(os.path.join(x[0], ".preserve")) for x in data]
 for i, (dir, dat, nam), loc in zip(reversed(range(len(data))), data, locked):
   if not os.path.isdir(dir):
@@ -165,7 +165,7 @@ for i, (dir, dat, nam), loc in zip(reversed(range(len(data))), data, locked):
   parts = ["\033[1;31m{0:2d}\033[0m".format(i)]
   parts.append("\033[1;32m"+nam.ljust(lens[2])+"\033[0m")
   if any(locked):
-    parts.append(u"🔒".encode("utf-8") if loc else "  ")
+    parts.append("🔒" if loc else "  ")
   parts.append(dat.ljust(lens[1]))
   parts.append("\033[37m"+dir.ljust(lens[0])+"\033[0m")
   print (" ".join(parts))
