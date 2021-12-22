@@ -11,6 +11,11 @@ set -eu
 # Explicitly handling hidden files here
 shopt -s dotglob
 
+# Make sure we weren't asked for usage
+if [[ "$1" == -h || "$1" == "--help" ]]; then
+    echo "Usage: ./install.sh"
+fi
+
 ########################################################################
 # Get the location of this script
 SOURCE="${BASH_SOURCE[0]}"
