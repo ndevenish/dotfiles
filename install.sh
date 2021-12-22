@@ -126,7 +126,7 @@ _all_inits=(~/.bash_profile ~/.bashrc_local ~/.bashrc ~/.profile)
 # shellcheck disable=SC2016
 init_block='# >>> .dotfiles integration >>>
 # !! Contents within this block are managed by .dotfiles installer !!
-for file in $(find "'"$DIR"'/bashrc.d" -name "*.sh" | sort -V); do
+for file in $(find "'"$DIR"'/bashrc.d" -name "*.sh" -o -name "*.bash" | sort -V); do
   source "$file"
 done
 export PATH=$PATH:'"$DIR"'/bin
