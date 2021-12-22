@@ -1,8 +1,21 @@
 #!/bin/bash
 
+# Check if we are sourced
+(return 0 2>/dev/null) && sourced=true || sourced=false
+if [[ $sourced == true ]]; then
+    echo "Error: Installation script must be explicitly run, not sourced"
+    return 1
+fi
+
 set -eu
 # Explicitly handling hidden files here
 shopt -s dotglob
+
+# Make sure we weren't asked for usage
+if [[ "${1:-}" == -h || "${1:-}" == "--help" ]]; then
+    echo "Usage: ./install.sh"
+    exit 0
+fi
 
 ########################################################################
 # Get the location of this script
@@ -95,7 +108,7 @@ done
 echo -e "\nInjecting/Updating bash startup script"
 
 # All target files to consider for initialization
-_all_inits=(~/.bash_profile ~/.bashrc_local ~/.profile ~/.bashrc)
+_all_inits=(~/.bash_profile ~/.bashrc_local ~/.bashrc ~/.profile)
 
 # shellcheck disable=SC2016
 init_block='# >>> .dotfiles integration >>>
