@@ -12,7 +12,7 @@ set -eu
 shopt -s dotglob
 
 # Make sure we weren't asked for usage
-if [[ "$1" == -h || "$1" == "--help" ]]; then
+if [[ "${1:-}" == -h || "${1:-}" == "--help" ]]; then
     echo "Usage: ./install.sh"
     exit 0
 fi
