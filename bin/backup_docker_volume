@@ -17,7 +17,7 @@ fi
 backup_file=$(date "+backup_${VOLUME}_%Y-%m-%d_%H:%M:%S.tar")
 (
     set -x
-    docker run -itv "$VOLUME:/source_volume" -v "$(pwd):/backup" ubuntu tar -cv "$@" --exclude-caches -f "/backup/${backup_file}" /source_volume
+    docker run -itv "$VOLUME:/$VOLUME" -v "$(pwd):/backup" ubuntu tar -cv "$@" --exclude-caches -f "/backup/${backup_file}" "/$VOLUME"
 )
 echo "$(tput bold)Compressing backup$(tput sgr0)"
 xz -v "$backup_file"
