@@ -1,18 +1,23 @@
 #!/bin/bash
 
-if [[ $# -ne 1 ]]; then
-    echo "Usage: backup.sh <volume_name>"
-    exit 1
-fi
-if [[ $1 == --help || $1 == -h ]]; then
-    echo "Usage: backup.sh <volume_name>"
-    exit 0
+USAGE="Usage: $(basename $0) <volume_name> [[tar_arg] ...]"
+if [[ $# -eq 0 || $1 == --help || $1 == -h ]]; then
+    echo "$USAGE"
+    [[ $# -eq 0 ]] && exit 0 || exit 1
 fi
 
-backup_file=$(date "+backup_$1_%Y%m%d_%H%M%S.tar")
+VOLUME="$1"
+shift
+# Make sure this volume exists
+if ! docker volume inspect "$VOLUME" >/dev/null 2>&1; then
+    echo "Error: There appears to be no volume named '$VOLUME'"
+    exit 1
+fi
+
+backup_file=$(date "+backup_${VOLUME}_%Y-%m-%d_%H:%M:%S.tar")
 (
     set -x
-    docker run -itv "$1:/source_volume" -v "$(pwd):/backup" ubuntu tar -cvf "/backup/${backup_file}" /source_volume
+    docker run -itv "$VOLUME:/source_volume" -v "$(pwd):/backup" ubuntu tar -cv "$@" --exclude-caches -f "/backup/${backup_file}" /source_volume
 )
 echo "$(tput bold)Compressing backup$(tput sgr0)"
 xz -v "$backup_file"
