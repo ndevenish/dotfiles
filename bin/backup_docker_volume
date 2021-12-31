@@ -14,7 +14,7 @@ if ! docker volume inspect "$VOLUME" >/dev/null 2>&1; then
     exit 1
 fi
 
-backup_file=$(date "+backup_${VOLUME}_%Y-%m-%d_%H:%M:%S.tar")
+backup_file=$(date "+backup_${VOLUME}_%Y-%m-%d_%H-%M-%S.tar")
 (
     set -x
     docker run -itv "$VOLUME:/$VOLUME" -v "$(pwd):/backup" ubuntu tar -cv "$@" --exclude-caches -f "/backup/${backup_file}" "/$VOLUME"
