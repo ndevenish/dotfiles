@@ -1,9 +1,29 @@
 #!/bin/bash
 
-USAGE="Usage: $(basename $0) <volume_name> [[tar_arg] ...]"
-if [[ $# -eq 0 || $1 == --help || $1 == -h ]]; then
+set -euo pipefail
+
+USAGE="Usage: $(basename $0) [-h|--help] <volume_name> [[<tar_arg>] ...]"
+if [[ $# -eq 0 ]]; then
     echo "$USAGE"
-    [[ $# -eq 0 ]] && exit 0 || exit 1
+    exit 1
+fi
+
+if [[ $1 == --help || $1 == -h ]]; then
+    cat <<EOF
+$USAGE
+
+Where:
+    <volume_name>   The name of the docker volume to backup
+    <tar_arg>       Any additional options to tar e.g. exclusions
+
+Back up a docker volume. This is done with tars '--exclude-caches'
+option, which means any folders with the file CACHEDIR.TAG whose
+contents start with 'Signature: 8a477f597d28d172789f06886806bc55'
+will be ignored as part of the backup (so only the folder and tag
+file themselves will be included). See https://bford.info/cachedir/
+for details on this scheme.
+EOF
+    exit 0
 fi
 
 VOLUME="$1"
@@ -15,10 +35,18 @@ if ! docker volume inspect "$VOLUME" >/dev/null 2>&1; then
 fi
 
 backup_file=$(date "+backup_${VOLUME}_%Y-%m-%d_%H-%M-%S.tar")
-(
+# Create now and then append so that it has our permissions
+touch "$backup_file"
+if ! (
+    set -euo pipefail
     set -x
-    docker run -itv "$VOLUME:/$VOLUME" -v "$(pwd):/backup" ubuntu tar -cv "$@" --exclude-caches -f "/backup/${backup_file}" "/$VOLUME"
-)
+    docker run --rm -itv "$VOLUME:/$VOLUME" -v "$(pwd):/backup" ubuntu \
+        tar --append -v "$@" --exclude-caches -f "/backup/${backup_file}" "/$VOLUME"
+); then
+    echo "$(tput bold)Tarball creation failed, removing intermediate file$(tput sgr0) $backup_file"
+    rm "$backup_file"
+    exit 1
+fi
 echo "$(tput bold)Compressing backup$(tput sgr0)"
 xz -v "$backup_file"
 
