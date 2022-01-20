@@ -1,5 +1,16 @@
 #!/bin/bash
 
+
+export GIT_PS1_SHOWDIRTYSTATE="${GIT_PS1_SHOWDIRTYSTATE:-1}"
+
+# Insert git_prompt
+if  [[ ! "$PS1" =~ __git_ps1 ]]; then
+    if [[ -z "$(type -t __git_ps1)" ]]; then
+        source ~/.git-prompt.sh
+    fi
+    PS1="$(printf "%s" "$PS1" | sed 's;\\\$;\$\(__git_ps1)\\\$;')"
+fi
+
 # Add a magic "red for failure" prompt state if not there already
 if [[ ! "$PS1" =~ 1\;31m\"\)\\]\\\$ ]]; then
     # This is escaped because at some point it gets unescaped in this sed
