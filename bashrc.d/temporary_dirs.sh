@@ -37,8 +37,10 @@
 #}
 
 mktmp() {
+  if [[ $1 == "-t" ]]; then
+    cd "$(mktemp --tmpdir="$2" -d)" || return 1
   # Detect DLS filesystem layout
-  if [[ -d /dls/tmp/mep23677 ]]; then
+  elif [[ -d /dls/tmp/mep23677 ]]; then
   # if mktemp --help 2>&1 > /dev/null; then
     cd "$(mktemp --tmpdir=/dls/tmp/mep23677 -d)" || return 1
   else
@@ -97,6 +99,25 @@ cdtmp() {
       cd "$last_temp" || return 1
     fi
   fi
+}
+
+########################################################################
+_cdstmp_help="
+Usage: cdstmp [-h | --help]
+
+cd to a new temporary folder, in DLS local scratch.
+" ######################################################################
+cdstmp() {
+  if [[ $1 == '-h' || $1 == '--help' ]]; then
+    echo "$_cdstmp_help" | tail -n +2 | sed '$ d'
+    return
+  fi
+  if [[ ! -d "/scratch" ]]; then
+    echo "Error: /scratch does not exist. Are you sure you are at Diamond?" >&2
+    return 1
+  fi
+  mkdir -p "/scratch/$(whoami)/tmp"
+  mktmp -t "/scratch/$(whoami)/tmp"
 }
 
 ########################################################################
