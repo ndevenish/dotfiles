@@ -3,6 +3,11 @@
 
 export GIT_PS1_SHOWDIRTYSTATE="${GIT_PS1_SHOWDIRTYSTATE:-1}"
 
+# If we're logged in via ssh, include the hostname
+if [[ -n "$SSH_CLIENT" ]]; then
+    export PS1="\h $PS1"
+fi
+
 # Insert git_prompt if not present
 if  [[ ! "$PS1" =~ __git_ps1 ]]; then
     if [[ -z "$(type -t __git_ps1)" ]]; then
