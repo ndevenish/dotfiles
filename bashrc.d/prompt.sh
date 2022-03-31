@@ -4,7 +4,7 @@
 export GIT_PS1_SHOWDIRTYSTATE="${GIT_PS1_SHOWDIRTYSTATE:-1}"
 
 # If we're logged in via ssh, include the hostname
-if [[ -n "$SSH_CLIENT" ]]; then
+if [[ -n "$SSH_CLIENT" ]] && ! (echo "$PS1" | grep -q "\h"); then
     export PS1="\h $PS1"
 fi
 
