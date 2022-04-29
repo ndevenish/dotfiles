@@ -31,3 +31,5 @@
 #    diff = /opt/homebrew/Cellar/git/2.32.0_1/share/git-core/contrib/diff-highlight/diff-highlight | less
 #[interactive]
 #    diffFilter = /opt/homebrew/Cellar/git/2.32.0_1/share/git-core/contrib/diff-highlight/diff-highlight
+[merge]
+	conflictStyle = zdiff3
