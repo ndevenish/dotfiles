@@ -3,9 +3,20 @@
 
 export GIT_PS1_SHOWDIRTYSTATE="${GIT_PS1_SHOWDIRTYSTATE:-1}"
 
+# The basic PS1
+# export PS1='\[\e[1;31m\]\W\[\e[0m\] \$ '
+
 # If we're logged in via ssh, include the hostname
 if [[ -n "$SSH_CLIENT" ]] && ! (echo "$PS1" | grep -q "\h"); then
     export PS1="\h $PS1"
+fi
+
+# If we have an "expected" user on this login, then choose whether to show
+if [[ -z "${EXPECTED_USER:-}" ]]; then
+    # No expected user. Always show user.
+    PS1="$( printf "%s" "$PS1" | sed 's/\\h/\\u@\\h/')"
+else
+    PS1="$( printf "%s" "$PS1" | sed 's/\\h/\\[$([ "$EXPECTED_USER" = "$USER" ] || echo '\\\\]\\\\u@')\\h/')"
 fi
 
 # Insert git_prompt if not present
@@ -14,6 +25,7 @@ if  [[ ! "$PS1" =~ __git_ps1 ]]; then
         # shellcheck disable=SC1090
         source ~/.git-prompt.sh
     fi
+    # Insert this just before the $
     PS1="$(printf "%s" "$PS1" | sed 's|\\\$|\\[\\e[1;34m\\]\$\(__git_ps1)\\[\\e[0m\\]\\\$|')"
     export PS1
 fi
