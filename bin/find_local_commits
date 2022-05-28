@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Finds and lists commits that are not present upstream.
+# Finds and lists commits that are not present upstream.
 #
 # Searches in and under the current directory for all .git repositories.
 # These are then checked for any local commits that are not present in

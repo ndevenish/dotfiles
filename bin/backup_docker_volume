@@ -28,14 +28,14 @@ fi
 
 VOLUME="$1"
 shift
-# Make sure this volume exists
+# Make sure this volume exists
 if ! docker volume inspect "$VOLUME" >/dev/null 2>&1; then
     echo "Error: There appears to be no volume named '$VOLUME'"
     exit 1
 fi
 
 backup_file=$(date "+backup_${VOLUME}_%Y-%m-%d_%H-%M-%S.tar")
-# Create now and then append so that it has our permissions
+# Create now and then append so that it has our permissions
 touch "$backup_file"
 if ! (
     set -euo pipefail
