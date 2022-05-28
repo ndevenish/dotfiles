@@ -1,15 +1,13 @@
 #!/bin/bash
-git-large-files() {
-    if [[ $1 = "-d" ]]; then
-      sort_key=3
-    else
-      sort_key=2
-    fi
-    git rev-list --objects --all \
+
+if [[ $1 = "-d" ]]; then
+  sort_key=3
+else
+  sort_key=2
+fi
+git rev-list --objects --all \
     | git cat-file --batch-check='%(objecttype) %(objectname) %(objectsize) %(objectsize:disk) %(rest)' \
     | sed -n 's/^blob //p' \
     | sort --numeric-sort --key=${sort_key} \
     | cut -c 1-12,41- \
     | $(command -v gnumfmt || echo numfmt) --field=2,3 --to=iec-i --suffix=B --padding=7 --round=nearest
-}
-
