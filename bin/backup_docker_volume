@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-USAGE="Usage: $(basename $0) [-h|--help] <volume_name> [[<tar_arg>] ...]"
+USAGE="Usage: $(basename "$0") [-h|--help] <volume_name> [[<tar_arg>] ...]"
 if [[ $# -eq 0 ]]; then
     echo "$USAGE"
     exit 1

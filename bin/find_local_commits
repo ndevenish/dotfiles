@@ -11,6 +11,8 @@
 # without manually checking every branch for upstream matches.
 #
 
+set -euo pipefail
+
 print_usage() {
   echo "Usage: find_local.sh [-h | --help] [search_dir]"
 }
@@ -39,8 +41,8 @@ fi
 printf "Finding repos...."
 repo_dirs=$(find -L $SEARCHDIR -name "*.git" -type d)
 count=$(echo "$repo_dirs" | wc -l)
-printf "${count//[[:space:]]/} found\n"
-repos=$(echo $repo_dirs | xargs -n 1 dirname)
+printf "%s" "${count//[[:space:]]/} found\n"
+repos=$(echo "$repo_dirs" | xargs -n 1 dirname)
 
 get_remote_diff_log() {
   git --no-pager log --branches --not --remotes --oneline --decorate --graph --color=always
@@ -48,12 +50,12 @@ get_remote_diff_log() {
 
 changed_repos=0
 for repo in $repos; do
-  ( cd $repo
+  ( cd "$repo"
     log_text=$(get_remote_diff_log)
     stashes=$(git stash list)
     no_up=""
     workchange=""
-    changed_repos=0
+    _changed_repos=0
     if [[ -n "$log_text" ]]; then
       no_up=yes
     fi
@@ -62,7 +64,7 @@ for repo in $repos; do
     fi
     # Output, if needed
     if [[ -n "$no_up" || -n "$workchange" || -n "$stashes" ]]; then
-      changed_repos=1
+      _changed_repos=1
       echo "$BOLD$RED$repo$NC:"
     fi
     if [[ -n "$no_up" ]]; then
@@ -74,7 +76,7 @@ for repo in $repos; do
     if [[ -n "$stashes" ]]; then
       echo "- Stashes present"
     fi
-    exit $changed_repos
+    exit $_changed_repos
   )
   # Use exit code as counter adder
   changed_repos=$((changed_repos+$?))
