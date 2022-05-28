@@ -1,0 +1,1 @@
+../bashrc.d/visit_dir.sh
