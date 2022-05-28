@@ -170,10 +170,11 @@ insert_or_replace_integration_in_file() {
             echo
             if [[ $REPLY =~ ^[Yy]$ ]]; then
                 echo "$NC   Copying existing file to $B$backup$NC"
-                ( set -x
+                (
                     cp "$file_to_inject" "$backup"
                     mv "$_working_file" "$file_to_inject"
                 )
+                echo "$NC$G   Successfully updated $BD$file_to_inject$NC"
             else
                 echo "User declined to change. Skipping update."
             fi
@@ -222,4 +223,20 @@ export PATH=$PATH:'"$DIR"'/bin
 elif [[ "$SHELL" == */zsh ]]; then
     echo -e "\nThis users default shell is set to ${BD}zsh$NC"
 
+    # The Zsh init block
+    # We want:
+    #   - ZSH_CUSTOM for Oh-my-zsh custom plugins, managed by dotfiles
+    #   - Custom zsh init scripts for things outside OMZ or unintegrated
+
+    # shellcheck disable=SC2016
+    init_block='# >>> .dotfiles integration >>>
+# !! Contents within this block are managed by .dotfiles installer !!
+ZSH_CUSTOM='"$DIR"'/zsh_custom
+for file in $(find "'"$DIR"'/zshrc.d" -name "*.zsh" | sort -V); do
+    source "$file"
+done
+export PATH=$PATH:'"$DIR"'/bin
+# <<< .dotfiles integration <<<'
+
+    insert_or_replace_integration_in_file "$HOME/.zshrc" "$init_block"
 fi
