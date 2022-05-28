@@ -4,7 +4,7 @@ if ! command -v fzf >/dev/null 2>&1; then
     return
 fi
 
-# Detect line editing available, and only use bind if it can work
+# Detect line editing available, and only use bind if it can work
 if [[ "$(set -o | grep 'emacs\|\bvi\b' | cut -f2 | tr '\n' ':')" != 'off:off:' ]]; then
     bind '"\C-r": "\C-x1\e^\er"'
     bind -x '"\C-x1": __fzf_history';
