@@ -1,4 +1,5 @@
 # bash/zsh git prompt support
+# shellcheck disable=all
 #
 # Copyright (C) 2006,2007 Shawn O. Pearce <spearce@spearce.org>
 # Distributed under the GNU General Public License, version 2.0.

@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # export_libtbx_env() {
 #    export LIBTBX_BUILD=$DIALS_DIST
 #    export FONTCONFIG_PATH="$LIBTBX_BUILD/../base/etc/fonts"
@@ -23,18 +25,18 @@ setup_dials() {
 
     if [[ -f $SETUP_DIR/setup.sh ]]; then
         OLD_DIR=$(pwd)
-        cd $SETUP_DIR
-        source $SETUP_DIR/setup.sh
-        cd $OLD_DIR
+        cd "$SETUP_DIR" || return 1
+        source "$SETUP_DIR/setup.sh"
+        cd "$OLD_DIR" || return 1
         DIALS_DIST_ROOT="${SETUP_DIR}/.."
     elif [[ -f $SETUP_DIR/setpaths.sh ]]; then
-        source $SETUP_DIR/setpaths.sh
+        source "$SETUP_DIR/setpaths.sh"
         DIALS_DIST_ROOT="${SETUP_DIR}/.."
     elif [[ -f "$SETUP_DIR/dials" ]]; then
         source "$SETUP_DIR/dials"
         DIALS_DIST_ROOT="${SETUP_DIR}"
     fi
-    echo $SETUP_DIR >~/.last_dials
+    echo "$SETUP_DIR" >~/.last_dials
     export DIALS_DIST=${SETUP_DIR}
 }
 
@@ -44,7 +46,7 @@ setup_this() {
 
 r() {
     SETUP_DIR=$(cat ~/.last_dials)
-    setup_dials ${SETUP_DIR}
+    setup_dials "${SETUP_DIR}"
 }
 
 # Find the dials build/ folder
@@ -53,10 +55,10 @@ _find_dials_build() {
         # We are at the root via ./dials - it can only be build/
         echo "$DIALS_DIST_ROOT/build"
     elif [[ -n "${DIALS_DIST}" ]]; then
-        echo ${DIALS_DIST}
+        echo "${DIALS_DIST}"
     else
         # Try to find it via other means
-        if command -v libtbx.show_build_path 2>&1 >/dev/null; then
+        if command -v libtbx.show_build_path >/dev/null 2>&1; then
             libtbx.show_build_path
         fi
     fi
@@ -68,7 +70,7 @@ cdd() {
         echo "No dials distribution active"
         return 1
     else
-        cd ${build}
+        cd "${build}" || return 1
     fi
 }
 
@@ -76,7 +78,7 @@ cdm() {
     if [[ -z "${DIALS_DIST_ROOT}" ]]; then
         echo "No dials distribution active"
     else
-        cd ${DIALS_DIST_ROOT}/modules
+        cd "${DIALS_DIST_ROOT}/modules" || return 1
     fi
 }
 im() {
@@ -98,8 +100,8 @@ im() {
         #$*
         #cd $CURDIR
         (
-            cd $dest_dir
-            $*
+            cd "$dest_dir" || return 1
+            "$@"
         )
         unset dest_dir
     fi
@@ -116,7 +118,7 @@ dmake() {
     echo "No dials distribution active"
     return 1
   else
-    ( cd ${build}
+    ( cd "${build}" || return 1
       make
     )
   fi

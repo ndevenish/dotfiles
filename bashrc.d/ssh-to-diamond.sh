@@ -27,7 +27,7 @@ inside_diamond() {
       nx_addr=$(python -c 'import socket; print([x[-1][0] for x in socket.getaddrinfo("nx-staff.diamond.ac.uk", 0)][0])')
   fi
 
-  if is_private_ip ${nx_addr}; then
+  if is_private_ip "${nx_addr}"; then
     return 0
   fi
   return 1

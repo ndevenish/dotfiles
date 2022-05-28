@@ -1,4 +1,7 @@
+#!/bin/bash
 
+# Ignore errors while we don't use this file
+# shellcheck disable=all
 return
 
 _dirdb() {

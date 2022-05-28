@@ -16,6 +16,7 @@ if [[ -z "${EXPECTED_USER:-}" ]]; then
     # No expected user. Always show user.
     PS1="$( printf "%s" "$PS1" | sed 's/\\h/\\u@\\h/')"
 else
+    # shellcheck disable=SC2016
     PS1="$( printf "%s" "$PS1" | sed 's/\\h/\\[$([ "$EXPECTED_USER" = "$USER" ] || echo '\\\\]\\\\u@')\\h/')"
 fi
 
