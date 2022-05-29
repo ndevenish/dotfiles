@@ -1,1 +1,1 @@
-../rc_common/temporary_dirs.sh
+../bashrc.d/temporary_dirs.sh

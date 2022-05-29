@@ -1,1 +1,1 @@
-../rc_common/visit_dir.sh
+../bashrc.d/visit_dir.sh
