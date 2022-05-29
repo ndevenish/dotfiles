@@ -1,1 +1,1 @@
-../bashrc.d/0_dials_envs.sh
+../rc_common/0_dials_envs.sh
