@@ -11,6 +11,9 @@
 
 # If Zsh, conda clobbers the HOST variable, so we need to rewrite
 if [[ -n ${ZSH_VERSION-} ]]; then
+    if [[ -z "$HOSTNAME" ]]; then
+        export HOSTNAME="$HOST"
+    fi
     precmd() {
         OLDHOST="${HOST}"
         HOST="${HOSTNAME}"
