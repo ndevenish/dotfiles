@@ -9,6 +9,18 @@
 #    export LIBTBX_EXPORTED_ENV=1
 # }
 
+# If Zsh, conda clobbers the HOST variable, so we need to rewrite
+if [[ -n ${ZSH_VERSION-} ]]; then
+    precmd() {
+        OLDHOST="${HOST}"
+        HOST="${HOSTNAME}"
+    }
+
+    preexec() {
+        HOST="${OLDHOST}"
+    }
+fi
+
 setup_dials() {
     if [[ -z "$1" ]]; then
         SETUP_DIR=$(pwd)
