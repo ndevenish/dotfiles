@@ -32,7 +32,7 @@ fi
 # Git part of prompt
 
 if [[ -n "$DOTFILES_REPO" ]]; then
-    source "$DOTFILES_REPO/rc_common/git-prompt.sh"
+    source "$DOTFILES_REPO/common/git-prompt.sh"
     # $(__git_ps1 " (%s)")
     _git='%B%F{blue}$(__git_ps1 "(%s) ")%f%b'
 fi
