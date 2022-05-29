@@ -34,7 +34,7 @@ fi
 if [[ -n "$DOTFILES_REPO" ]]; then
     source "$DOTFILES_REPO/common/git-prompt.sh"
     # $(__git_ps1 " (%s)")
-    _git='%B%F{blue}$(__git_ps1 "(%s) ")%f%b'
+    _git='%B$(__git_ps1 "(%s) ")%b'
 fi
 
 ########################################################################
