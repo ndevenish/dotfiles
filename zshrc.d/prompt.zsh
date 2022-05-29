@@ -5,6 +5,7 @@ setopt PROMPT_SUBST
 
 # Show dirty state in git branches
 export GIT_PS1_SHOWDIRTYSTATE=1
+export GIT_PS1_SHOWCOLORHINTS=1
 
 ########################################################################
 # Hostname - only show if logged in remotely
