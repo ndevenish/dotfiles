@@ -4,6 +4,9 @@ bindkey -e
 setopt autocd notify
 setopt EXTENDED_HISTORY
 
+setopt noautomenu
+setopt nomenucomplete
+
 # BSD-style, safe to always set
 export CLICOLOR=1
 # Detect GNU vs BSD ls to turn on colours
