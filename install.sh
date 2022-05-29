@@ -231,6 +231,7 @@ elif [[ "$SHELL" == */zsh ]]; then
     # shellcheck disable=SC2016
     init_block='# >>> .dotfiles integration >>>
 # !! Contents within this block are managed by .dotfiles installer !!
+DOTFILES_REPO="'"$DIR"'"
 ZSH_CUSTOM='"$DIR"'/zsh_custom
 for file in $(find "'"$DIR"'/zshrc.d" -name "*.zsh" | sort -V); do
     source "$file"
