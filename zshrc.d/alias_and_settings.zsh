@@ -2,4 +2,4 @@
 bindkey -e
 
 setopt autocd notify
-setope EXTENDED_HISTORY
+setopt EXTENDED_HISTORY
