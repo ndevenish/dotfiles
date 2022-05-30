@@ -1,10 +1,10 @@
-# If we don't have fzf available, don't configure
-if ! command -v fzf >/dev/null 2>&1; then
-    return
-fi
-
 # CTRL-R - Paste the selected command from history into the command line
 fzf-fullhistory-widget() {
+    # If fzf was not available at configure time, check now
+    if ! command -v fzf; then
+        zle history-incremental-search-backward
+        return
+    fi
     local reverser=tac
     if ! command -v tac >/dev/null 2>&1; then
         reverser='tail -r'
