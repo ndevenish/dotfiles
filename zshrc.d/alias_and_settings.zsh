@@ -7,6 +7,9 @@ setopt EXTENDED_HISTORY
 setopt noautomenu
 setopt nomenucomplete
 
+# This is annoying for things like conda
+setopt noautoremoveslash
+
 # BSD-style, safe to always set
 export CLICOLOR=1
 # Detect GNU vs BSD ls to turn on colours
