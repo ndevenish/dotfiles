@@ -233,7 +233,7 @@ elif [[ "$SHELL" == */zsh ]]; then
 # !! Contents within this block are managed by .dotfiles installer !!
 DOTFILES_REPO="'"$DIR"'"
 ZSH_CUSTOM='"$DIR"'/zsh_custom
-for file in $(find "'"$DIR"'/zshrc.d" -name "*.zsh" | sort -V); do
+for file in $(find "'"$DIR"'/zshrc.d" -name "*.zsh" -o -name "*.sh" | sort -V); do
     source "$file"
 done
 export PATH=$PATH:'"$DIR"'/bin
