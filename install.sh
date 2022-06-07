@@ -39,7 +39,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
         exit 1
     fi
     function readlink_resolve() {
-        python -c "import os, sys; print(os.path.realpath(sys.argv[1]))" "$@"
+        "$python" -c "import os, sys; print(os.path.realpath(sys.argv[1]))" "$@"
     }
     function abspath() {
         "$python" -c "import os, sys; print(os.path.abspath(sys.argv[1]))" "$@"
