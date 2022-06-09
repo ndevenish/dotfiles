@@ -10,7 +10,7 @@ pre_timer() {
 }
 post_timer() {
     _last_time=""
-    if [[ $_timer ]]; then
+    if (( ${+_timer} )); then
         per_exec=$(($SECONDS-$_timer))
         # Don't show anything if less than 20 seconds has elapsed
         if [[ $per_exec -lt 10 ]]; then
