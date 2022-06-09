@@ -32,8 +32,19 @@ fi
 # Git part of prompt
 
 if [[ -n "$DOTFILES_REPO" ]]; then
-    source "$DOTFILES_REPO/common/git-prompt.sh"
-    # $(__git_ps1 " (%s)")
+    local original="$DOTFILES_REPO/common/git-prompt.sh"
+    local rewritten="$DOTFILES_REPO/common/git-prompt.sh.rewrite"
+    if [[ ! -f $rewritten ]]; then
+    #  || "$(stat -c%Y $rewritten)" -lt "$(stat -c%Y $original)"
+        echo "Rewriting"
+        cat "$original" | \
+            sed -e 's/%F{red}/%F{160}/g' \
+                -e 's/%F{green}/%F{64}/g' \
+                -e 's/%F{blue}/%F{33}/g' > $rewritten
+    fi
+    # # Check the file timestamp and if it needs to be regenerated
+    # (( $(stat -c%Y git-prompt.sh)
+    source "$rewritten"
     _git='%B$(__git_ps1 "(%s) ")%b'
 fi
 
