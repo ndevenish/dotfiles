@@ -36,7 +36,6 @@ if [[ -n "$DOTFILES_REPO" ]]; then
     local rewritten="$DOTFILES_REPO/common/git-prompt.sh.rewrite"
     if [[ ! -f $rewritten ]]; then
     #  || "$(stat -c%Y $rewritten)" -lt "$(stat -c%Y $original)"
-        echo "Rewriting"
         cat "$original" | \
             sed -e 's/%F{red}/%F{160}/g' \
                 -e 's/%F{green}/%F{64}/g' \
