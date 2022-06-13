@@ -56,7 +56,7 @@ fi
 BD="$(printf "\033[1m")"
 R="$(printf "\033[31m")"
 G="$(printf "\033[32m")"
-# Y="$(printf "\033[33m")"
+Y="$(printf "\033[33m")"
 B="$(printf "\033[34m")"
 # M="$(printf "\033[35m")"
 # C="$(printf "\033[36m")"
@@ -66,6 +66,28 @@ NC="$(printf "\033[0m")"
 
 # Keep track of if something failed
 FAIL=""
+
+########################################################################
+# Validate that if we're a git repository, we checked out recursively
+
+if [[ -e "$DIR/.git" ]]; then
+    git_dir="$DIR/.git"
+    if [[ -f "$DIR/.git" ]]; then
+        # A worktree?
+        git_dir="$(cat .git | cut -d' ' -f 2-)"
+        if [[ ! -d "$git_dir" ]]; then
+            echo "${Y}Warning: .git exists but cannot find root. No submodule checks."
+        fi
+    fi
+    # Now we have the proper git dir location, check if our submodules are initialised
+    if ! grep -q '\[submodule "' "$git_dir/config"; then
+        echo "Repository not cloned recursively, updating...."
+        git -C "$DIR" submodule init
+        git -C "$DIR" submodule update
+        echo
+    fi
+fi
+
 
 ########################################################################
 # Make softlinks in $HOME to everything in homedir/*
