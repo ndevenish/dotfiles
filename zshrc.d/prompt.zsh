@@ -57,7 +57,7 @@ _red_cwd="%B%F{red}%1~%f%b"
 _red_prompt_for_failure="%(?.%#.%B%F{red}%#%f%b)"
 
 PROMPT="$_user_host_name$_red_cwd $_git$_red_prompt_for_failure "
-RPROMPT='%F{white}$([[ -n $_last_time ]] && echo "($_last_time) ")%*%f'
+RPROMPT='%F{white}%B# %b$([[ -n $_last_time ]] && echo "($_last_time) ")%*%f'
 
 # # Debugging spacing issues
 # echo "PARTS"
