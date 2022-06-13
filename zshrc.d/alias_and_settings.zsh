@@ -10,6 +10,9 @@ setopt nomenucomplete
 # This is annoying for things like conda
 setopt noautoremoveslash
 
+# Allow tab completion of paths after = e.g. --prefix=<path>
+setopt magic_equal_subst
+
 # BSD-style, safe to always set
 export CLICOLOR=1
 # Detect GNU vs BSD ls to turn on colours
