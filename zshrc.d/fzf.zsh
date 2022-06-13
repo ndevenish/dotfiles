@@ -7,7 +7,7 @@ fzf-fullhistory-widget() {
     fi
     local reverser=tac
     if ! command -v tac >/dev/null 2>&1; then
-        reverser='tail -r'
+        reverser=(tail -r)
     fi
     zle -U "$($reverser ~/.fullhistory \
         | fzf --with-nth 3.. -n 2.. --tiebreak=index --preview 'echo {} | cut -d" " -f 4-' --preview-window=up,3,wrap --bind change:top \
