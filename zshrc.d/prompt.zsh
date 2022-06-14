@@ -22,6 +22,9 @@ fi
 if [[ -z "${EXPECTED_USER:-}" ]]; then
     # No expected user. Always show user.
     _user_host_name="%n@${_hostname% } "
+    if [[ -n "${PROMPT_USER_COLOR}" ]]; then
+        _user_host_name="${PROMPT_USER_COLOR}$_user_host_name%f%b"
+    fi
 else
     # Only show user if it is different from expected
     # shellcheck disable=SC2016
