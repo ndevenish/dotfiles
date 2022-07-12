@@ -1,0 +1,21 @@
+#!/bin/bash
+
+if [[ "$1" == "-h" || "$1" == "--help" ]]; then
+    echo "Usage: git-relbranch [branch]
+
+Args:
+    BRANCH  Name of -next branch to compare. Default: dials-next"
+    exit 0
+fi
+
+branch="${1:-dials-next}"
+
+upstream_branch="$(git for-each-ref --format '%(refname) %(upstream)' refs/heads/$branch | cut -d' ' -f 2)"
+
+remote="$(echo "$upstream_branch" | cut -d/ -f 3)"
+
+merge_base="$(git merge-base $upstream_branch $remote/main)"
+
+git --no-pager log --graph --oneline "$remote/main" "$upstream_branch" "$remote/main"...$merge_base^
+
+#  git --no-pager log --graph --oneline dials/main dials/dials-next-3.8 dials/main...$(git merge-base dials/dials-next-3.8 dials/main)^ dials/dials-next
