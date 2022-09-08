@@ -7,6 +7,9 @@ setopt EXTENDED_HISTORY
 setopt noautomenu
 setopt nomenucomplete
 
+# Allow inline comments
+setopt interactivecomments
+
 # This is annoying for things like conda
 setopt noautoremoveslash
 
