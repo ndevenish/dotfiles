@@ -112,12 +112,14 @@ cdstmp() {
     echo "$_cdstmp_help" | tail -n +2 | sed '$ d'
     return
   fi
-  if [[ ! -d "/scratch" ]]; then
-    echo "Error: /scratch does not exist. Are you sure you are at Diamond?" >&2
+  local _scratch="${SCRATCH:-/scratch}"
+
+  if [[ ! -d "$_scratch" ]]; then
+    echo "Error: $_scratch does not exist. Are you sure you are at Diamond?" >&2
     return 1
   fi
-  mkdir -p "/scratch/$(whoami)/tmp"
-  mktmp -t "/scratch/$(whoami)/tmp"
+  mkdir -p "$_scratch/$(whoami)/tmp"
+  mktmp -t "$_scratch/$(whoami)/tmp"
 }
 
 ########################################################################
