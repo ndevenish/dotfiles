@@ -2,6 +2,7 @@
 
 set -euo pipefail
 
+
 USAGE="Usage: $(basename "$0") [-h|--help] <volume_name> [[<tar_arg>] ...]"
 if [[ $# -eq 0 ]]; then
     echo "$USAGE"
@@ -28,20 +29,30 @@ fi
 
 VOLUME="$1"
 shift
+
+# Find what docker is called
+if command -v docker >/dev/null; then
+    docker=docker
+elif command -v podman >/dev/null; then
+    docker=podman
+fi
+
+
 # Make sure this volume exists
-if ! docker volume inspect "$VOLUME" >/dev/null 2>&1; then
+if ! $docker volume inspect "$VOLUME" >/dev/null 2>&1; then
     echo "Error: There appears to be no volume named '$VOLUME'"
     exit 1
 fi
 
 backup_file=$(date "+backup_${VOLUME}_%Y-%m-%d_%H-%M-%S.tar")
 # Create now and then append so that it has our permissions
-touch "$backup_file"
+#touch "$backup_file"
+# tar --append -v "$@" --exclude-caches -f "/backup/${backup_file}" "/$VOLUME"
 if ! (
     set -euo pipefail
     set -x
-    docker run --rm -itv "$VOLUME:/$VOLUME" -v "$(pwd):/backup" ubuntu \
-        tar --append -v "$@" --exclude-caches -f "/backup/${backup_file}" "/$VOLUME"
+    $docker run --rm -itv "$VOLUME:/$VOLUME" -v "$(pwd):/backup" ubuntu \
+        tar -c -f "/backup/$backup_file" -v "$@" --exclude-caches "/$VOLUME"
 ); then
     echo "$(tput bold)Tarball creation failed, removing intermediate file$(tput sgr0) $backup_file"
     rm "$backup_file"
