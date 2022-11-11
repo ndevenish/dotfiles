@@ -4,7 +4,7 @@
 
 # start templated
 INSTALL_PYTHON=/dls/science/users/mep23677/modules/python/3.10.5/bin/python3
-ARGS=(hook-impl --config=.pre-commit-config.yaml --hook-type=pre-commit)
+ARGS=(hook-impl --config=.pre-commit-config.yaml --hook-type=pre-commit --skip-on-missing-config)
 # end templated
 
 HERE="$(cd "$(dirname "$0")" && pwd)"
