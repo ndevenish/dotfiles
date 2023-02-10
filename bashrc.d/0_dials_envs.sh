@@ -41,13 +41,16 @@ setup_dials() {
     if [[ -f $SETUP_DIR/setup.sh ]]; then
         OLD_DIR=$(pwd)
         cd "$SETUP_DIR" || return 1
+        echo "+ source $SETUP_DIR/setup.sh"
         source "$SETUP_DIR/setup.sh"
         cd "$OLD_DIR" || return 1
         DIALS_DIST_ROOT="${SETUP_DIR}/.."
     elif [[ -f $SETUP_DIR/setpaths.sh ]]; then
+        echo "+ source $SETUP_DIR/setpaths.sh"
         source "$SETUP_DIR/setpaths.sh"
         DIALS_DIST_ROOT="${SETUP_DIR}/.."
     elif [[ -f "$SETUP_DIR/dials" ]]; then
+        echo "+ source $SETUP_DIR/dials"
         source "$SETUP_DIR/dials"
         DIALS_DIST_ROOT="${SETUP_DIR}"
     fi
