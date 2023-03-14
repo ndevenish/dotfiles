@@ -17,8 +17,12 @@ setup() {
         if [[ -f "$dir/$name" ]]; then
             echo -e "Sourcing \033[1m$dir/$name\033[0m\n"
             cd "$dir" || return
+
+            trap '[[ "$0" == '$dir/$name' ]] && print -r -- "+ $ZSH_DEBUG_CMD" >&2' DEBUG
+
             # shellcheck disable=SC1090
             source "$dir/$name"
+            trap - DEBUG
             cd "$start_dir" || return
             break
         else
