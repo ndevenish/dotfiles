@@ -33,3 +33,5 @@
 #    diffFilter = /opt/homebrew/Cellar/git/2.32.0_1/share/git-core/contrib/diff-highlight/diff-highlight
 [merge]
 	conflictStyle = zdiff3
+[push]
+	autoSetupRemote = true
