@@ -19,13 +19,20 @@ config.default_prog = { 'zsh', '-l'}
 
 config.enable_scroll_bar = true
 
-config.font = wezterm.font "SF Mono"
+config.font = wezterm.font("SF Mono", { weight = "Medium" })
+-- config.font = wezterm.font "Menlo"
+-- config.font = wezterm.font "Fira Code"
 config.font_size = 13.3
+-- config.freetype_load_target = "Normal"
+-- config.freetype_render_target = "Normal"
+
+-- config.font = wezterm.font "JetBrains Mono"
+-- config.font_size = 13
 
 config.window_padding = {
-    left = 0,
+    left = 5,
     right = 0,
-    top = 0,
+    top = 2,
     bottom = 0,
 }
 
@@ -57,6 +64,7 @@ if wezterm.target_triple == "x86_64-apple-darwin" or wezterm.target_triple == "a
         scrollbar_thumb = '#7a7a7a'
     }
     COMMAND = "CMD"
+    config.send_composed_key_when_left_alt_is_pressed = true
 else
     COMMAND = "CTRL"
 end
@@ -65,14 +73,21 @@ config.keys = {
     {
         key = 'LeftArrow',
         mods = COMMAND .. '|SHIFT',
-        action = wezterm.action.ActivateTabRelative(-1),
+        action = wezterm.action.ActivateTabRelative(-1)
     },
     {
         key = 'RightArrow',
         mods = COMMAND .. '|SHIFT',
-        action = wezterm.action.ActivateTabRelative(1),
+        action = wezterm.action.ActivateTabRelative(1)
     },
+    {
+        key = 'k',
+        mods = 'SUPER',
+        action = wezterm.action.ClearScrollback 'ScrollbackAndViewport'
+    }
 }
+
+config.use_ime = true
 
 -- and finally, return the configuration to wezterm
 return config
