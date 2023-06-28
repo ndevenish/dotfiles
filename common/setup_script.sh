@@ -19,7 +19,7 @@ setup() {
             cd "$dir" || return
 
             if [[ "$name" != dials ]]; then
-                trap '[[ "$0" == '$dir/$name' ]] && print -r -- "+ $ZSH_DEBUG_CMD" >&2' DEBUG
+                trap '[[ "$0" == '$dir/$name' && $ZSH_DEBUG_CMD != pwd ]] && print -r -- "+ $ZSH_DEBUG_CMD" >&2' DEBUG
             fi
 
             # shellcheck disable=SC1090
