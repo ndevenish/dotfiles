@@ -12,19 +12,12 @@ end
 
 -- local solr = wezterm.color.get_builtin_schemes()["Builtin Solarized Light"]
 local solr = wezterm.color.get_builtin_schemes()["Solarized (light) (terminal.sexy)"]
-
--- solr.foreground = "#000000"
--- solr.foreground = "#5a7078"
--- solr.scrollbar_thumb = solr.foreground
 solr.foreground = "#073642"
 solr.scrollbar_thumb = "#7a7a7a"
-config.color_schemes = {["Myne"] = solr}
+config.color_schemes = {["My Solarized"] = solr}
 -- config.colors = {scrollbar_thumb = '#7a7a7a'}
 
-config.color_scheme = "Myne"
-
--- config.color_scheme = 'Solarized (light) (terminal.sexy)'
--- config.color_scheme = 'Builtin Light'
+config.color_scheme = "My Solarized"
 
 -- On Diamond systems, cannot change default shell to zsh
 config.default_prog = {"zsh", "-l"}
@@ -33,8 +26,6 @@ config.enable_scroll_bar = true
 
 config.font = wezterm.font("SF Mono", {weight = "Medium"})
 config.font_size = 13
--- config.freetype_load_target = "Normal"
--- config.freetype_render_target = "Normal"
 
 config.window_padding = {left = 5, right = 0, top = 2, bottom = 0}
 
