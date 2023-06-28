@@ -97,6 +97,15 @@ table.insert(config.keys, {
 -- config.use_ime = true
 config.hide_tab_bar_if_only_one_tab = true
 
+config.initial_cols = 120
+config.initial_rows = 35
+config.window_frame = {
+    font_size = 13,
+    active_titlebar_bg = "#7a7a7a",
+    --    active_titlebar_bg = '#d2d2d2',
+    --    inactive_titlebar_bg = '#cc0000'
+}
+
 -- and finally, return the configuration to wezterm
 return config
 
