@@ -3,3 +3,4 @@ single_quote_to_double_quote: true
 keep_simple_control_block_one_line: false
 extra_sep_at_table_end: true
 chop_down_table: true
+break_after_operator: false
