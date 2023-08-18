@@ -136,8 +136,10 @@ dmake() {
     echo "No dials distribution active"
     return 1
   else
-    ( cd "${build}" || return 1
-      make
-    )
+    if [[ -f "${build}/CMakeCache.txt" ]]; then
+        cmake --build "${build}"
+    else
+        make -C "${build}"
+    fi
   fi
 }
