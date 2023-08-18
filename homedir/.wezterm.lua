@@ -11,19 +11,47 @@ if wezterm.config_builder then
 end
 
 -- local solr = wezterm.color.get_builtin_schemes()["Builtin Solarized Light"]
-local solr = wezterm.color.get_builtin_schemes()["Solarized (light) (terminal.sexy)"]
-solr.foreground = "#073642"
-solr.scrollbar_thumb = "#7a7a7a"
-config.color_schemes = {["My Solarized"] = solr}
+local solr_light =
+    wezterm.color.get_builtin_schemes()["Solarized (light) (terminal.sexy)"]
+solr_light.foreground = "#073642"
+solr_light.scrollbar_thumb = "#7a7a7a"
 -- config.colors = {scrollbar_thumb = '#7a7a7a'}
 
-config.color_scheme = "My Solarized"
+local solr_dark =
+    wezterm.color.get_builtin_schemes()["Solarized (dark) (terminal.sexy)"]
+solr_dark.scrollbar_thumb = "#657b83"
+
+config.color_schemes = {
+    ["My Solarized Light"] = solr_light,
+    ["My Solarized Dark"] = solr_dark,
+}
+
+function get_appearance()
+    if wezterm.gui then
+        return wezterm.gui.get_appearance()
+    end
+    return "Dark"
+end
+
+function scheme_for_appearance(appearance)
+    if appearance:find "Dark" then
+        -- return "Solarized (dark) (terminal.sexy)"
+        return "My Solarized Dark"
+    else
+        return "My Solarized Light"
+    end
+end
+
+-- config.color_scheme = "My Solarized"
+config.color_scheme = scheme_for_appearance(get_appearance())
 
 -- On Diamond systems, cannot change default shell to zsh
 config.default_prog = {"zsh", "-l"}
+config.default_cwd = "~"
 
 config.enable_scroll_bar = true
-
+config.min_scroll_bar_height = "2cell"
+config.scrollback_lines = 10000
 config.font = wezterm.font("SF Mono", {weight = "Medium"})
 config.font_size = 13
 
@@ -106,6 +134,13 @@ config.window_frame = {
     --    inactive_titlebar_bg = '#cc0000'
 }
 
+config.skip_close_confirmation_for_processes_named = {
+    "bash",
+    "sh",
+    "zsh",
+    "tmux",
+    "ssh",
+}
 -- and finally, return the configuration to wezterm
 return config
 
