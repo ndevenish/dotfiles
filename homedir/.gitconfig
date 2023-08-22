@@ -35,3 +35,5 @@
 	conflictStyle = zdiff3
 [push]
 	autoSetupRemote = true
+[core]
+	attributesfile = /home/mep23677/.gitattributes
