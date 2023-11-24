@@ -7,6 +7,7 @@
 	dc = diff --cached
 	cia = commit --amend
 	loggo = log --graph --oneline
+	pr = gh pr checkout
 [user]
 	name = Nicholas Devenish
 	email = ndevenish@gmail.com
