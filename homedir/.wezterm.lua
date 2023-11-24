@@ -52,7 +52,6 @@ config.default_cwd = "~"
 config.enable_scroll_bar = true
 config.min_scroll_bar_height = "2cell"
 config.scrollback_lines = 10000
-config.font = wezterm.font("SF Mono", {weight = "Medium"})
 config.font_size = 13
 
 config.window_padding = {left = 5, right = 0, top = 2, bottom = 0}
@@ -64,6 +63,7 @@ config.keys = {}
 
 -- if wezterm.target_triple == "x86_64-apple-darwin" or wezterm.target_triple == "aarch64-apple-darwin" then
 if string.find(wezterm.target_triple, "apple") then
+    config.font = wezterm.font("SF Mono", {weight = "Medium"})
     -- Match my iTerm2 configuration for now - if we didn't change the general scheme
     if config.color_scheme == "Builtin Light" then
         config.colors = {
@@ -120,6 +120,15 @@ table.insert(config.keys, {
     key = "k",
     mods = "SUPER",
     action = wezterm.action.ClearScrollback "ScrollbackAndViewport",
+})
+table.insert(config.keys, {
+    key = 'a',
+    mods = 'CMD',
+    action = wezterm.action_callback(function(window, pane)
+        local dims = pane:get_dimensions()
+        local txt = pane:get_text_from_region(0, dims.scrollback_top, 0, dims.scrollback_top + dims.scrollback_rows)
+        window:copy_to_clipboard(txt:match('^%s*(.-)%s*$')) -- trim leading and trailing whitespace
+    end)
 })
 
 -- config.use_ime = true
