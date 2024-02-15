@@ -150,6 +150,18 @@ config.skip_close_confirmation_for_processes_named = {
     "tmux",
     "ssh",
 }
+
+config.keys = {
+  -- CMD-y starts `top` in a new tab
+  {
+    key = 't',
+    mods = 'CMD',
+    action = wezterm.action.SpawnCommandInNewTab {
+      cwd = wezterm.home_dir,
+    },
+  },
+}
+
 -- and finally, return the configuration to wezterm
 return config
 
