@@ -42,3 +42,4 @@ let g:rustfmt_autosave = 1
 " Don't let indentLines hide the quotes in markdown or JSON
 let g:vim_json_conceal=0
 let g:markdown_syntax_conceal=0
+
