@@ -122,13 +122,14 @@ table.insert(config.keys, {
     action = wezterm.action.ClearScrollback "ScrollbackAndViewport",
 })
 table.insert(config.keys, {
-    key = 'a',
-    mods = 'CMD',
+    key = "a",
+    mods = "CMD",
     action = wezterm.action_callback(function(window, pane)
         local dims = pane:get_dimensions()
-        local txt = pane:get_text_from_region(0, dims.scrollback_top, 0, dims.scrollback_top + dims.scrollback_rows)
-        window:copy_to_clipboard(txt:match('^%s*(.-)%s*$')) -- trim leading and trailing whitespace
-    end)
+        local txt = pane:get_text_from_region(0, dims.scrollback_top, 0,
+                                              dims.scrollback_top + dims.scrollback_rows)
+        window:copy_to_clipboard(txt:match("^%s*(.-)%s*$")) -- trim leading and trailing whitespace
+    end),
 })
 
 -- config.use_ime = true
@@ -151,16 +152,16 @@ config.skip_close_confirmation_for_processes_named = {
     "ssh",
 }
 
-config.keys = {
-  -- CMD-y starts `top` in a new tab
-  {
-    key = 't',
-    mods = 'CMD',
-    action = wezterm.action.SpawnCommandInNewTab {
-      cwd = wezterm.home_dir,
-    },
-  },
-}
+-- config.keys = {
+--  -- CMD-y starts `top` in a new tab
+--  {
+--    key = 't',
+--    mods = 'CMD',
+--    action = wezterm.action.SpawnCommandInNewTab {
+--      cwd = wezterm.home_dir,
+--    },
+--  },
+-- }
 
 -- and finally, return the configuration to wezterm
 return config
