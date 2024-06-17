@@ -51,7 +51,7 @@ config.default_cwd = "~"
 
 config.enable_scroll_bar = true
 config.min_scroll_bar_height = "2cell"
-config.scrollback_lines = 10000
+config.scrollback_lines = 20000
 config.font_size = 13
 
 config.window_padding = {left = 5, right = 0, top = 2, bottom = 0}
