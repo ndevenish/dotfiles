@@ -50,3 +50,12 @@ fi
 
 alias cdg='cd $(git rev-parse --show-toplevel)'
 
+# Don't jump over / (it was in here by default)
+export WORDCHARS="${WORDCHARS:s/\//}"
+# If we have | in the remove-suffix, remove it (ctrl-w over | is annoying)
+if [[ -v ZLE_REMOVE_SUFFIX_CHARS ]]; then
+    export ZLE_REMOVE_SUFFIX_CHARS="${ZLE_REMOVE_SUFFIX_CHARS:s/|//}"
+else
+    export ZLE_REMOVE_SUFFIX_CHARS=$' \t\n;&'
+fi
+
