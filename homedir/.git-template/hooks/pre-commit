@@ -3,7 +3,7 @@
 # ID: 138fd403232d2ddd5efb44317e38bf03
 
 # start templated
-INSTALL_PYTHON=/dls/science/users/mep23677/modules/python/3.11.3/bin/python3
+INSTALL_PYTHON=/Users/nickd/.local/pipx/venvs/pre-commit/bin/python
 ARGS=(hook-impl --config=.pre-commit-config.yaml --hook-type=pre-commit --skip-on-missing-config)
 # end templated
 

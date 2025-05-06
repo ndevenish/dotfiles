@@ -52,7 +52,7 @@ config.default_cwd = "~"
 config.enable_scroll_bar = true
 config.min_scroll_bar_height = "2cell"
 config.scrollback_lines = 20000
-config.font_size = 13
+config.font_size = 14
 
 config.window_padding = {left = 5, right = 0, top = 2, bottom = 0}
 
@@ -63,7 +63,9 @@ config.keys = {}
 
 -- if wezterm.target_triple == "x86_64-apple-darwin" or wezterm.target_triple == "aarch64-apple-darwin" then
 if string.find(wezterm.target_triple, "apple") then
-    config.font = wezterm.font("SF Mono", {weight = "Medium"})
+    -- config.font = wezterm.font("SF Mono", {weight = "Medium"})
+    config.font = wezterm.font("Menlo", {weight = "Regular"})
+    
     -- Match my iTerm2 configuration for now - if we didn't change the general scheme
     if config.color_scheme == "Builtin Light" then
         config.colors = {
@@ -150,6 +152,7 @@ config.skip_close_confirmation_for_processes_named = {
     "zsh",
     "tmux",
     "ssh",
+    "pssh",
 }
 
 -- CMD-y starts `top` in a new tab
