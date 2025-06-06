@@ -68,12 +68,12 @@ NC="$(printf "\033[0m")"
 FAIL=""
 
 ########################################################################
-# Validate that if we're a git repository, we checked out recursively
+# Validate that if we're a git repository, we checked out recursively
 
 if [[ -e "$DIR/.git" ]]; then
     git_dir="$DIR/.git"
     if [[ -f "$DIR/.git" ]]; then
-        # A worktree?
+        # A worktree?
         git_dir="$(cat .git | cut -d' ' -f 2-)"
         if [[ ! -d "$git_dir" ]]; then
             echo "${Y}Warning: .git exists but cannot find root. No submodule checks."
