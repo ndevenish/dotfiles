@@ -339,7 +339,7 @@ if ! command -v mamba >/dev/null 2>&1; then
         echo "$BD${G}$(~/.local/bin/micromamba --version)$NC"
     fi
 else
-    echo "${GREY}SKIP${NC}"
+    echo "${GREY}SKIP (have mamba)${NC}"
 fi
 
 printf "    uv            "
