@@ -7,7 +7,7 @@ if [[ $sourced == true ]]; then
     return 1
 fi
 
-set -eu
+set -euo pipefail
 # Explicitly handling hidden files here
 shopt -s dotglob
 
@@ -325,22 +325,59 @@ elif command -v wget 1>/dev/null 2>&1; then
     }
 fi
 
+# Usage: get_github_release org/repo
+get_github_release() {
+    download "https://api.github.com/repos/$1/releases/latest" \
+        | grep tag_name \
+        | grep -Eo ': "([^"]+)"' \
+        | sed -e 's/"//g' -e 's/://g' -e 's/ //g'
+}
+
 # Computing artifact location
 case "$(uname)" in
   Linux)
-    PLATFORM="linux" ;;
+    PLATFORM="linux"
+    PLATFORM_FZF="linux"
+    PLATFORM_RG="unknown-linux-gnu"
+    PLATFORM_BAT="unknown-linux-gnu"
+    ;;
   Darwin)
-    PLATFORM="osx" ;;
+    PLATFORM="osx"
+    PLATFORM_FZF="darwin"
+    PLATFORM_RG="apple-darwin"
+    PLATFORM_BAT="apple-darwin"
+    ;;
   *NT*)
-    PLATFORM="win" ;;
+    PLATFORM="win"
+    PLATFORM_FZF="windows"
+    PLATFORM_RG="pc-windows"
+    PLATFORM_BAT="pc-windows-msvc"
+    ;;
 esac
 
 ARCH="$(uname -m)"
+ARCH_FZF="$ARCH"
+ARCH_RG="$ARCH"
+ARCH_BAT="$ARCH"
 case "$ARCH" in
-  aarch64|ppc64le|arm64)
-      ;;  # pass
+  aarch64)
+    ARCH_FZF="arm64"
+    ;;
+  ppc64le)
+    ;;
+  arm64)
+    ARCH_RG=aarch64
+    ARCH_BAT=aarch64
+    ;;
+  amd64)
+    ARCH_RG=x86_64
+    ARCH_BAT=x86_64
+    ;;
+  x86_64|i686)
+    ARCH_FZF="amd64"
+    ;;
   *)
-    ARCH="64" ;;
+    ;;
 esac
 
 case "$PLATFORM-$ARCH" in
@@ -356,22 +393,80 @@ echo
 echo "${BD}Tooling fetch/update$NC"
 echo
 
-printf "    micromamba    "
-if ! command -v mamba >/dev/null 2>&1; then
-    if ! _output=$(PREFIX_LOCATION=${MAMBA_ROOT_PREFIX:-"${HOME}/.cache/micromamba"} silently bash "$DIR/tools/install_micromamba.sh" </dev/null 2>&1); then
-        echo "$BD${R}FAIL$NC"
-        echo "$R$_output$NC"
-    else
-        echo "$BD${G}$(~/.local/bin/micromamba --version)$NC"
+# printf "    %-14s" micromamba
+# if ! command -v mamba >/dev/null 2>&1; then
+#     if ! _output=$(PREFIX_LOCATION=${MAMBA_ROOT_PREFIX:-"${HOME}/.cache/micromamba"} silently bash "$DIR/tools/install_micromamba.sh" </dev/null 2>&1); then
+#         echo "$BD${R}FAIL$NC"
+#         echo "$R$_output$NC"
+#     else
+#         echo "$BD${G}$(~/.local/bin/micromamba --version)$NC"
+#     fi
+# else
+#     echo "${GREY}SKIP (have mamba)${NC}"
+# fi
+
+# printf "    %-14s" uv
+# if ! _output=$(silently bash "$DIR/tools/install_uv.sh" </dev/null 2>&1); then
+#     echo "$BD${R}FAIL$NC"
+#     echo "$R$_output$NC"
+# else
+#     echo "$BD${G}$(~/.local/bin/uv --version | cut -d' ' -f 2)$NC"
+# fi
+
+should_download_tool() {
+    _name="$1"
+    # If we have this somewhere that isn't ~/.local/bin, or if the
+    # path in ~/.local/bin is a symlink, skip
+    if [[ $(command -v $_name) != "$HOME/.local/bin" ]]; then
+        printf "    %-14s" "$_name"
+        echo "${GREY}SKIP (exists outside ~/.local/bin))${NC}"
+        return 1
+    elif [[ -L "~/.local/bin/$_name" ]]; then
+        printf "    %-14s" "$_name"
+        echo "${GREY}SKIP (~/.local/bin is symlink)${NC}"
+        return 1
     fi
-else
-    echo "${GREY}SKIP (have mamba)${NC}"
+    return 0
+}
+
+try_download_tool() {
+    _name=$1
+    _url=$2
+    printf "    %-14s" "$_name"
+    _tmp=$(mktemp -d)
+    if ! _output="$(download "$_url" | tar -xf - -C "$_tmp")"; then
+        echo "$BD${R}FAIL$NC"
+        echo "${R}Failed to download $_url$NC"
+        echo "$R$_output$NC"
+        return
+    fi
+    # Find the executable
+    find "$_tmp" -name "$_name" | xargs -I% mv % ~/.local/bin
+
+    if find "$_tmp" -name "*.1" >/dev/null 2>&1; then
+        mkdir -p ~/.local/share/man/man1
+        find "$_tmp" -name "*.1" | xargs -I% mv % ~/.local/share/man/man1
+    fi
+    echo "$BD${G}$(~/.local/bin/$_name --version | head -n 1)"
+    rm -rf "$_tmp"
+}
+
+if should_download_tool fzf; then
+    _fzf_version="$(get_github_release junegunn/fzf)"
+    try_download_tool fzf "https://github.com/junegunn/fzf/releases/download/$_fzf_version/fzf-${_fzf_version#v*}-${PLATFORM_FZF}_${ARCH_FZF}.tar.gz"
 fi
 
-printf "    uv            "
-if ! _output=$(silently bash "$DIR/tools/install_uv.sh" </dev/null 2>&1); then
-    echo "$BD${R}FAIL$NC"
-    echo "$R$_output$NC"
-else
-    echo "$BD${G}$(~/.local/bin/uv --version | cut -d' ' -f 2)$NC"
+if should_download_tool bat; then
+    _bat_version="$(get_github_release sharkdp/bat)"
+    try_download_tool bat "https://github.com/sharkdp/bat/releases/download/$_bat_version/bat-${_bat_version}-${ARCH_BAT}-${PLATFORM_BAT}.tar.gz"
+fi
+
+if should_download_tool rg; then
+    _rg_version="$(get_github_release BurntSushi/ripgrep)"
+    try_download_tool rg "https://github.com/BurntSushi/ripgrep/releases/download/$_rg_version/ripgrep-${_rg_version#v*}-${ARCH_RG}-${PLATFORM_RG}.tar.gz"
+fi
+
+if should_download_tool difft; then
+    _dt_version="$(get_github_release Wilfred/difftastic)"
+    try_download_tool difft "https://github.com/Wilfred/difftastic/releases/download/$_dt_version/difft-${ARCH_BAT}-${PLATFORM_BAT}.tar.gz"
 fi
