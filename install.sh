@@ -369,6 +369,7 @@ arm64)
 amd64)
     ARCH_RG=x86_64
     ARCH_BAT=x86_64
+    ARCH="x86_64"
     ;;
 x86_64 | i686)
     ARCH_FZF="amd64"
@@ -377,7 +378,7 @@ x86_64 | i686)
 esac
 
 case "$PLATFORM-$ARCH" in
-linux-aarch64 | linux-ppc64le | linux-64 | osx-arm64 | osx-64 | win-64) ;; # pass
+linux-aarch64 | linux-ppc64le | linux-x86_64 | osx-arm64 | osx-x86_64 | win-x86_64) ;; # pass
 *)
     echo "Failed to detect your OS; $PLATFORM-$ARCH not recognised." >&2
     exit 1
