@@ -59,6 +59,7 @@ R="$(printf "\033[31m")"
 G="$(printf "\033[32m")"
 Y="$(printf "\033[33m")"
 B="$(printf "\033[34m")"
+GREY="$(printf "\033[37m")"
 # M="$(printf "\033[35m")"
 # C="$(printf "\033[36m")"
 W="$(printf "\033[37m")"
@@ -81,7 +82,7 @@ silently() {
     savex
     set +x
     if ! output="$("$@" 2>&1)"; then
-        printf "${BOLD}${RED}Error running${NC} %s${RED}${BOLD}:\n${RED}${output}${NC}\n" "$*"
+        printf "${BD}${R}Error running${NC} %s${R}${BD}:\n${R}${output}${NC}\n" "$*"
         return 1
     fi
     loadx
@@ -328,14 +329,17 @@ esac
 echo
 echo "${BD}Tooling fetch/update$NC"
 echo
+
 printf "    micromamba    "
-
-
-if ! _output=$(silently bash "$DIR/tools/install_micromamba.sh" </dev/null 2>&1); then
-    echo "$BD${R}FAIL$NC"
-    echo "$R$_output$NC"
+if ! command -v mamba >/dev/null 2>&1; then
+    if ! _output=$(PREFIX_LOCATION=${MAMBA_ROOT_PREFIX:-"${HOME}/.cache/micromamba"} silently bash "$DIR/tools/install_micromamba.sh" </dev/null 2>&1); then
+        echo "$BD${R}FAIL$NC"
+        echo "$R$_output$NC"
+    else
+        echo "$BD${G}$(~/.local/bin/micromamba --version)$NC"
+    fi
 else
-    echo "$BD${G}$(~/.local/bin/micromamba --version)$NC"
+    echo "${GREY}SKIP${NC}"
 fi
 
 printf "    uv            "
