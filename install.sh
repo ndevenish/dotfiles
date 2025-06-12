@@ -448,7 +448,7 @@ try_download_tool() {
         mkdir -p ~/.local/share/man/man1
         find "$_tmp" -name "*.1" | xargs -I% mv % ~/.local/share/man/man1
     fi
-    echo "$BD${G}$(~/.local/bin/$_name --version | head -n 1)"
+    echo "$BD${G}$(~/.local/bin/$_name --version | head -n 1)${NC}"
     rm -rf "$_tmp"
 }
 
