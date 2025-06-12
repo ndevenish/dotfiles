@@ -417,7 +417,7 @@ should_download_tool() {
     _name="$1"
     # If we have this somewhere that isn't ~/.local/bin, or if the
     # path in ~/.local/bin is a symlink, skip
-    if [[ $(command -v $_name) != "$HOME/.local/bin" ]]; then
+    if _output="$(command -v $_name)" && [[ "$_output" != "$HOME/.local/bin" ]]; then
         printf "    %-14s" "$_name"
         echo "${GREY}SKIP (exists outside ~/.local/bin))${NC}"
         return 1
