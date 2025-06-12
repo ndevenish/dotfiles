@@ -28,6 +28,7 @@ done
 DIR="$(cd -P "$(dirname "$SOURCE")" >/dev/null 2>&1 && pwd)"
 ########################################################################
 
+
 # Cross-platform functions - commands to elide platform differences
 if [[ "$OSTYPE" == "darwin"* ]]; then
     if command -v "python3" 1>/dev/null 2>&1; then
@@ -58,6 +59,7 @@ R="$(printf "\033[31m")"
 G="$(printf "\033[32m")"
 Y="$(printf "\033[33m")"
 B="$(printf "\033[34m")"
+GREY="$(printf "\033[37m")"
 # M="$(printf "\033[35m")"
 # C="$(printf "\033[36m")"
 W="$(printf "\033[37m")"
@@ -67,13 +69,32 @@ NC="$(printf "\033[0m")"
 # Keep track of if something failed
 FAIL=""
 
+savex() {
+    echo $- | grep -q x && SETX=-x || SETX=+x
+}
+loadx() {
+    set "$SETX"
+}
+
+# Run a command and suppress output unless it errors
+silently() {
+    # Work out if -x is on and turn off if it is
+    savex
+    set +x
+    if ! output="$("$@" 2>&1)"; then
+        printf "${BD}${R}Error running${NC} %s${R}${BD}:\n${R}${output}${NC}\n" "$*"
+        return 1
+    fi
+    loadx
+}
+
 ########################################################################
-# Validate that if we're a git repository, we checked out recursively
+# Validate that if we're a git repository, we checked out recursively
 
 if [[ -e "$DIR/.git" ]]; then
     git_dir="$DIR/.git"
     if [[ -f "$DIR/.git" ]]; then
-        # A worktree?
+        # A worktree?
         git_dir="$(cat .git | cut -d' ' -f 2-)"
         if [[ ! -d "$git_dir" ]]; then
             echo "${Y}Warning: .git exists but cannot find root. No submodule checks."
@@ -262,4 +283,69 @@ export PATH=$PATH:'"$DIR"'/bin
 # <<< .dotfiles integration <<<'
 
     insert_or_replace_integration_in_file "$HOME/.zshrc" "$init_block"
+fi
+
+########################################################################
+# Tooling installs
+
+# Work out how to download files
+if command -v curl 1>/dev/null 2>&1; then
+    download() {
+        curl -fsSL ${1:?}
+    }
+elif command -v wget 1>/dev/null 2>&1; then
+    download() {
+        wget -O - ${1:?} 2>/dev/null
+    }
+fi
+
+# Computing artifact location
+case "$(uname)" in
+  Linux)
+    PLATFORM="linux" ;;
+  Darwin)
+    PLATFORM="osx" ;;
+  *NT*)
+    PLATFORM="win" ;;
+esac
+
+ARCH="$(uname -m)"
+case "$ARCH" in
+  aarch64|ppc64le|arm64)
+      ;;  # pass
+  *)
+    ARCH="64" ;;
+esac
+
+case "$PLATFORM-$ARCH" in
+  linux-aarch64|linux-ppc64le|linux-64|osx-arm64|osx-64|win-64)
+      ;;  # pass
+  *)
+    echo "Failed to detect your OS" >&2
+    exit 1
+    ;;
+esac
+
+echo
+echo "${BD}Tooling fetch/update$NC"
+echo
+
+printf "    micromamba    "
+if ! command -v mamba >/dev/null 2>&1; then
+    if ! _output=$(PREFIX_LOCATION=${MAMBA_ROOT_PREFIX:-"${HOME}/.cache/micromamba"} silently bash "$DIR/tools/install_micromamba.sh" </dev/null 2>&1); then
+        echo "$BD${R}FAIL$NC"
+        echo "$R$_output$NC"
+    else
+        echo "$BD${G}$(~/.local/bin/micromamba --version)$NC"
+    fi
+else
+    echo "${GREY}SKIP${NC}"
+fi
+
+printf "    uv            "
+if ! _output=$(silently bash "$DIR/tools/install_uv.sh" </dev/null 2>&1); then
+    echo "$BD${R}FAIL$NC"
+    echo "$R$_output$NC"
+else
+    echo "$BD${G}$(~/.local/bin/uv --version | cut -d' ' -f 2)$NC"
 fi
