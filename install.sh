@@ -379,7 +379,7 @@ esac
 case "$PLATFORM-$ARCH" in
 linux-aarch64 | linux-ppc64le | linux-64 | osx-arm64 | osx-64 | win-64) ;; # pass
 *)
-    echo "Failed to detect your OS" >&2
+    echo "Failed to detect your OS; $PLATFORM-$ARCH not recognised." >&2
     exit 1
     ;;
 esac
