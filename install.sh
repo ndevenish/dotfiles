@@ -116,9 +116,9 @@ fi
 echo -e "${BD}Installing/Updating existing .dotfiles links$NC\n"
 
 function link_dir_contents() {
-    source="$1"
-    dest="$2"
-    indent="${3:-}"
+    local source="$1"
+    local dest="$2"
+    local indent="${3:-}"
 
     for item in "${source}"/*; do
         # Handle in-band signalling that isn't copied
@@ -128,7 +128,7 @@ function link_dir_contents() {
 
         # If the target does not exist, we need to construct
         target="${dest}/$(basename "$item")"
-        printf "$indent    ~%-20s    " "${target#"$HOME"}"
+        printf "    %-24s " "$indent~${target#"$HOME"}"
         # If the source is an "external" folder and not present, create it
         if [[ ! -e "$target" && -f "$item/.external-folder" ]]; then
             mkdir -p "$target"
