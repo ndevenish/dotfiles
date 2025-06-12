@@ -434,7 +434,7 @@ try_download_tool() {
     _url=$2
     printf "    %-14s" "$_name"
     _tmp=$(mktemp -d)
-    if ! _output="$(download "$_url" | tar -xf - -C "$_tmp")"; then
+    if ! _output="$(download "$_url" | tar -xzf - -C "$_tmp")"; then
         echo "$BD${R}FAIL$NC"
         echo "${R}Failed to download $_url$NC"
         echo "$R$_output$NC"
