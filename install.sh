@@ -28,7 +28,6 @@ done
 DIR="$(cd -P "$(dirname "$SOURCE")" >/dev/null 2>&1 && pwd)"
 ########################################################################
 
-
 # Cross-platform functions - commands to elide platform differences
 if [[ "$OSTYPE" == "darwin"* ]]; then
     if command -v "python3" 1>/dev/null 2>&1; then
@@ -95,7 +94,7 @@ if [[ -e "$DIR/.git" ]]; then
     git_dir="$DIR/.git"
     if [[ -f "$DIR/.git" ]]; then
         # A worktree?
-        git_dir="$(< .git cut -d' ' -f 2-)"
+        git_dir="$(cut <.git -d' ' -f 2-)"
         if [[ ! -d "$git_dir" ]]; then
             echo "${Y}Warning: .git exists but cannot find root. No submodule checks."
         fi
@@ -108,7 +107,6 @@ if [[ -e "$DIR/.git" ]]; then
         echo
     fi
 fi
-
 
 ########################################################################
 # Make softlinks in $HOME to everything in homedir/*
@@ -185,7 +183,7 @@ if [[ ! -f ~/.gitconfig-local ]]; then
     touch ~/.gitconfig-local
     echo "[init]
     templateDir = $HOME/.git-template
-    " > ~/.gitconfig-local
+    " >~/.gitconfig-local
     echo "    done."
 else
     echo -e "\n$B.gitconfig-local$NC already exists, not recreating"
@@ -214,24 +212,24 @@ insert_or_replace_integration_in_file() {
     if ! grep -sq "$start_line" "$file_to_inject"; then
         echo "    No existing integration, writing to $B~${file_to_inject#"$HOME"}$NC"
         # Easy case - there is no line in the file yet
-        echo "$lines_to_inject" >> "$file_to_inject"
+        echo "$lines_to_inject" >>"$file_to_inject"
         echo "    Injected!"
     else
         echo "    Found existing integration in $B~${file_to_inject#"$HOME"}$NC"
         _working_file=$(mktemp)
         # We already have the lines in the file, and might be trying to update
-        sed -n '/'"$start_line"'/q;p' "$file_to_inject" > "$_working_file"
-        echo "$lines_to_inject" >> "$_working_file"
-        sed '1,/^'"$end_line"'/d' "$file_to_inject" >> "$_working_file"
+        sed -n '/'"$start_line"'/q;p' "$file_to_inject" >"$_working_file"
+        echo "$lines_to_inject" >>"$_working_file"
+        sed '1,/^'"$end_line"'/d' "$file_to_inject" >>"$_working_file"
 
         if ! cmp -s "$file_to_inject" "$_working_file"; then
             echo "    There are changes to update:$W"
-            diff -u "$file_to_inject" "$_working_file" \
-            | tail -n +4 \
-            | sed -E \
-                -e 's/^(-.*)$/'"$R"'\1'"$W"'/' \
-                -e 's/^(\+.*)$/'"$G"'\1'"$W"'/' \
-                -e 's/^/        /' || true
+            diff -u "$file_to_inject" "$_working_file" |
+                tail -n +4 |
+                sed -E \
+                    -e 's/^(-.*)$/'"$R"'\1'"$W"'/' \
+                    -e 's/^(\+.*)$/'"$G"'\1'"$W"'/' \
+                    -e 's/^/        /' || true
             _basename="$(basename "$file_to_inject")"
             backup="$HOME/${_basename}.bak"
             echo
@@ -327,27 +325,27 @@ fi
 
 # Usage: get_github_release org/repo
 get_github_release() {
-    download "https://api.github.com/repos/$1/releases/latest" \
-        | grep tag_name \
-        | grep -Eo ': "([^"]+)"' \
-        | sed -e 's/"//g' -e 's/://g' -e 's/ //g'
+    download "https://api.github.com/repos/$1/releases/latest" |
+        grep tag_name |
+        grep -Eo ': "([^"]+)"' |
+        sed -e 's/"//g' -e 's/://g' -e 's/ //g'
 }
 
 # Computing artifact location
 case "$(uname)" in
-  Linux)
+Linux)
     PLATFORM="linux"
     PLATFORM_FZF="linux"
     PLATFORM_RG="unknown-linux-gnu"
     PLATFORM_BAT="unknown-linux-gnu"
     ;;
-  Darwin)
+Darwin)
     PLATFORM="osx"
     PLATFORM_FZF="darwin"
     PLATFORM_RG="apple-darwin"
     PLATFORM_BAT="apple-darwin"
     ;;
-  *NT*)
+*NT*)
     PLATFORM="win"
     PLATFORM_FZF="windows"
     PLATFORM_RG="pc-windows"
@@ -360,30 +358,27 @@ ARCH_FZF="$ARCH"
 ARCH_RG="$ARCH"
 ARCH_BAT="$ARCH"
 case "$ARCH" in
-  aarch64)
+aarch64)
     ARCH_FZF="arm64"
     ;;
-  ppc64le)
-    ;;
-  arm64)
+ppc64le) ;;
+arm64)
     ARCH_RG=aarch64
     ARCH_BAT=aarch64
     ;;
-  amd64)
+amd64)
     ARCH_RG=x86_64
     ARCH_BAT=x86_64
     ;;
-  x86_64|i686)
+x86_64 | i686)
     ARCH_FZF="amd64"
     ;;
-  *)
-    ;;
+*) ;;
 esac
 
 case "$PLATFORM-$ARCH" in
-  linux-aarch64|linux-ppc64le|linux-64|osx-arm64|osx-64|win-64)
-      ;;  # pass
-  *)
+linux-aarch64 | linux-ppc64le | linux-64 | osx-arm64 | osx-64 | win-64) ;; # pass
+*)
     echo "Failed to detect your OS" >&2
     exit 1
     ;;
@@ -393,8 +388,25 @@ echo
 echo "${BD}Tooling fetch/update$NC"
 echo
 
+should_download_tool() {
+    _name="$1"
+    # If we have this somewhere that isn't ~/.local/bin, or if the
+    # path in ~/.local/bin is a symlink, skip
+    if _output="$(command -v $_name)" && [[ "$_output" != "$HOME/.local/bin/$_name" ]]; then
+        printf "    %-14s" "$_name"
+        echo "${GREY}SKIP (exists outside ~/.local/bin))${NC}"
+        return 1
+    elif [[ -L "~/.local/bin/$_name" ]]; then
+        printf "    %-14s" "$_name"
+        echo "${GREY}SKIP (~/.local/bin is symlink)${NC}"
+        return 1
+    fi
+    return 0
+}
+
 printf "    %-14s" micromamba
-if ! command -v mamba >/dev/null 2>&1; then
+
+if should_download_tool micromamba; then
     if ! _output=$(PREFIX_LOCATION=${MAMBA_ROOT_PREFIX:-"${HOME}/.cache/micromamba"} silently bash "$DIR/tools/install_micromamba.sh" </dev/null 2>&1); then
         echo "$BD${R}FAIL$NC"
         echo "$R$_output$NC"
@@ -412,22 +424,6 @@ if ! _output=$(silently bash "$DIR/tools/install_uv.sh" </dev/null 2>&1); then
 else
     echo "$BD${G}$(~/.local/bin/uv --version | cut -d' ' -f 2)$NC"
 fi
-
-should_download_tool() {
-    _name="$1"
-    # If we have this somewhere that isn't ~/.local/bin, or if the
-    # path in ~/.local/bin is a symlink, skip
-    if _output="$(command -v $_name)" && [[ "$_output" != "$HOME/.local/bin/$_name" ]]; then
-        printf "    %-14s" "$_name"
-        echo "${GREY}SKIP (exists outside ~/.local/bin))${NC}"
-        return 1
-    elif [[ -L "~/.local/bin/$_name" ]]; then
-        printf "    %-14s" "$_name"
-        echo "${GREY}SKIP (~/.local/bin is symlink)${NC}"
-        return 1
-    fi
-    return 0
-}
 
 try_download_tool() {
     _name=$1
