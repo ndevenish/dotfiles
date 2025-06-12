@@ -338,18 +338,21 @@ Linux)
     PLATFORM_FZF="linux"
     PLATFORM_RG="unknown-linux-gnu"
     PLATFORM_BAT="unknown-linux-gnu"
+    PLATFORM_DIFFT="unknown-linux-musl"
     ;;
 Darwin)
     PLATFORM="osx"
     PLATFORM_FZF="darwin"
     PLATFORM_RG="apple-darwin"
     PLATFORM_BAT="apple-darwin"
+    PLATFORM_DIFFT="apple-darwin"
     ;;
 *NT*)
     PLATFORM="win"
     PLATFORM_FZF="windows"
     PLATFORM_RG="pc-windows"
     PLATFORM_BAT="pc-windows-msvc"
+    PLATFORM_DIFFT="pc-windows-msvc"
     ;;
 esac
 
@@ -466,5 +469,5 @@ fi
 
 if should_download_tool difft; then
     _dt_version="$(get_github_release Wilfred/difftastic)"
-    try_download_tool difft "https://github.com/Wilfred/difftastic/releases/download/$_dt_version/difft-${ARCH_BAT}-${PLATFORM_BAT}.tar.gz"
+    try_download_tool difft "https://github.com/Wilfred/difftastic/releases/download/$_dt_version/difft-${ARCH_BAT}-${PLATFORM_DIFFT}.tar.gz"
 fi
