@@ -441,6 +441,7 @@ try_download_tool() {
         return
     fi
     # Find the executable
+    mkdir -p ~/.local/bin
     find "$_tmp" -name "$_name" | xargs -I% mv % ~/.local/bin
 
     if find "$_tmp" -name "*.1" >/dev/null 2>&1; then
