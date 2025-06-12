@@ -95,7 +95,7 @@ if [[ -e "$DIR/.git" ]]; then
     git_dir="$DIR/.git"
     if [[ -f "$DIR/.git" ]]; then
         # A worktree?
-        git_dir="$(cat .git | cut -d' ' -f 2-)"
+        git_dir="$(< .git cut -d' ' -f 2-)"
         if [[ ! -d "$git_dir" ]]; then
             echo "${Y}Warning: .git exists but cannot find root. No submodule checks."
         fi
@@ -115,41 +115,67 @@ fi
 
 echo -e "${BD}Installing/Updating existing .dotfiles links$NC\n"
 
+function link_dir_contents() {
+    source="$1"
+    dest="$2"
+    indent="${3:-}"
+
+    for item in "${source}"/*; do
+        # Handle in-band signalling that isn't copied
+        if [[ "$(basename "$item")" == ".external-folder" ]]; then
+            continue
+        fi
+
+        # If the target does not exist, we need to construct
+        target="${dest}/$(basename "$item")"
+        printf "$indent    ~%-20s    " "${target#"$HOME"}"
+        # If the source is an "external" folder and not present, create it
+        if [[ ! -e "$target" && -f "$item/.external-folder" ]]; then
+            mkdir -p "$target"
+        fi
+
+        if [[ ! -e "$target" ]]; then
+            # If it doesn't exist, yet, then we just want a softlink
+            ln -s "$item" "$target"
+            echo "${indent}${G}New Link$NC"
+        elif [[ -L "$target" ]]; then
+            # Already a symbolic link - check it points to this
+            _exist_link="$(readlink_resolve "$target")"
+            if [[ "$(abspath "$_exist_link")" == "$item" ]]; then
+                echo "${G}Existing Link$NC"
+            else
+                echo "${R}Link points to different file - $_exist_link$NC"
+                FAIL=$((FAIL + 1))
+            fi
+        elif [[ -f "$target" ]]; then
+            # Check if this file is the same as the source - if it is, then relink
+            if cmp -s "$target" "$item"; then
+                rm "$target"
+                ln -s "$item" "$target"
+                echo "$BD${G}Relinked existing (identical) file$NC"
+            else
+                echo "${R}File exists and does not match - cannot relink${NC}"
+                FAIL=$((FAIL + 1))
+            fi
+        elif [[ -d "$target" && ! -d "$item" ]]; then
+            echo "${R}Error: Target is a directory, expected a file. Remove or merge manually.$NC"
+            FAIL=$((FAIL + 1))
+        elif [[ -d "$target" && -f "$item/.external-folder" ]]; then
+            # We want to recursively sublink in this folder
+            echo "${G}External, recursing$NC"
+            link_dir_contents "$item" "$target" "$indent    "
+        elif [[ -d "$target" ]]; then
+            echo "${R}Error: Target directory exists. Remove or merge manually.$NC"
+            FAIL=$((FAIL + 1))
+        else
+            echo "${R}Unknown error: Cannot handle $target$NC"
+            FAIL=$((FAIL + 1))
+        fi
+    done
+}
 echo "Softlinks to homedir:"
-for item in "${DIR}"/homedir/*; do
-    # If the target does not exist, link it
-    link="$HOME/$(basename "$item")"
-    printf "    ~%-20s    " "${link#"$HOME"}"
-    if [[ ! -e "$link" && ! -d "$link" ]]; then
-        ln -s "$item" "$link"
-        echo "${G}New Link$NC"
-    elif [[ -L "$link" ]]; then
-        # Already a symbolic link - check it points to this
-        _exist_link="$(readlink_resolve "$link")"
-        if [[ "$(abspath "$_exist_link")" == "$item" ]]; then
-            echo "${G}Existing Link$NC"
-        else
-            echo "${R}Link points to different file - $_exist_link$NC"
-            FAIL=$((FAIL + 1))
-        fi
-    elif [[ -f "$link" ]]; then
-        # Check if this file is the same as the target - if it is, then relink
-        if cmp -s "$link" "$item"; then
-            rm "$link"
-            ln -s "$item" "$link"
-            echo "$BD${G}Relinked existing (identical) file$NC"
-        else
-            echo "${R}File exists and does not match - cannot relink${NC}"
-            FAIL=$((FAIL + 1))
-        fi
-    elif [[ -d "$link" ]]; then
-        echo "${R}Error: Target directory exists. Remove or merge manually.$NC"
-        FAIL=$((FAIL + 1))
-    else
-        echo "${R}Unknown error: Cannot handle $link$NC"
-        FAIL=$((FAIL + 1))
-    fi
-done
+
+link_dir_contents "${DIR}"/homedir "$HOME"
 
 ########################################################################
 # Make a .gitconfig-local for the main gitconfig to point to
@@ -291,11 +317,11 @@ fi
 # Work out how to download files
 if command -v curl 1>/dev/null 2>&1; then
     download() {
-        curl -fsSL ${1:?}
+        curl -fsSL "${1:?}"
     }
 elif command -v wget 1>/dev/null 2>&1; then
     download() {
-        wget -O - ${1:?} 2>/dev/null
+        wget -O - "${1:?}" 2>/dev/null
     }
 fi
 
