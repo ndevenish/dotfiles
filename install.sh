@@ -393,25 +393,25 @@ echo
 echo "${BD}Tooling fetch/update$NC"
 echo
 
-# printf "    %-14s" micromamba
-# if ! command -v mamba >/dev/null 2>&1; then
-#     if ! _output=$(PREFIX_LOCATION=${MAMBA_ROOT_PREFIX:-"${HOME}/.cache/micromamba"} silently bash "$DIR/tools/install_micromamba.sh" </dev/null 2>&1); then
-#         echo "$BD${R}FAIL$NC"
-#         echo "$R$_output$NC"
-#     else
-#         echo "$BD${G}$(~/.local/bin/micromamba --version)$NC"
-#     fi
-# else
-#     echo "${GREY}SKIP (have mamba)${NC}"
-# fi
+printf "    %-14s" micromamba
+if ! command -v mamba >/dev/null 2>&1; then
+    if ! _output=$(PREFIX_LOCATION=${MAMBA_ROOT_PREFIX:-"${HOME}/.cache/micromamba"} silently bash "$DIR/tools/install_micromamba.sh" </dev/null 2>&1); then
+        echo "$BD${R}FAIL$NC"
+        echo "$R$_output$NC"
+    else
+        echo "$BD${G}$(~/.local/bin/micromamba --version)$NC"
+    fi
+else
+    echo "${GREY}SKIP (have mamba)${NC}"
+fi
 
-# printf "    %-14s" uv
-# if ! _output=$(silently bash "$DIR/tools/install_uv.sh" </dev/null 2>&1); then
-#     echo "$BD${R}FAIL$NC"
-#     echo "$R$_output$NC"
-# else
-#     echo "$BD${G}$(~/.local/bin/uv --version | cut -d' ' -f 2)$NC"
-# fi
+printf "    %-14s" uv
+if ! _output=$(silently bash "$DIR/tools/install_uv.sh" </dev/null 2>&1); then
+    echo "$BD${R}FAIL$NC"
+    echo "$R$_output$NC"
+else
+    echo "$BD${G}$(~/.local/bin/uv --version | cut -d' ' -f 2)$NC"
+fi
 
 should_download_tool() {
     _name="$1"
