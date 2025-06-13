@@ -19,13 +19,7 @@ fi
 
 # Only show the user if it is different from "expected".
 # The definition of expected is expected to be defined locally
-if [[ -z "${EXPECTED_USER:-}" ]]; then
-    # No expected user. Always show user.
-    _user_host_name="%n@${_hostname% } "
-    if [[ -n "${PROMPT_USER_COLOR}" ]]; then
-        _user_host_name="${PROMPT_USER_COLOR}$_user_host_name%f%b"
-    fi
-else
+if [[ -n "${EXPECTED_USER:-}" ]]; then
     # Only show user if it is different from expected
     # shellcheck disable=SC2016
     _user_host_name='$([[ $USER == $EXPECTED_USER ]] && echo "'"$_hostname"'" || echo "%n@'"${_hostname% }"' ")'""
