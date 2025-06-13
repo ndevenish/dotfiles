@@ -39,5 +39,3 @@
 [core]
 	attributesfile = /home/mep23677/.gitattributes
 
-[diff]
-    external = difft
