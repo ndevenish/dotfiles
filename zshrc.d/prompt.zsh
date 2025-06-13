@@ -32,6 +32,8 @@ if [[ -n "${EXPECTED_USER:-}" ]]; then
     # Only show user if it is different from expected
     # shellcheck disable=SC2016
     _user_host_name='$([[ $USER == $EXPECTED_USER ]] && echo "'"$_hostname"'" || echo "%n@'"${_hostname% }"' ")'""
+else
+   _user_host_name="$_hostname"
 fi
 
 ########################################################################
