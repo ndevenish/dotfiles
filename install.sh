@@ -303,6 +303,7 @@ ZSH_CUSTOM='"$DIR"'/zsh_custom
 for file in $(find "'"$DIR"'/zshrc.d" -name "*.zsh" -o -name "*.sh" | sort -V); do
     source "$file"
 done
+(( $path[(Ie)$HOME/.local/bin] )) || export PATH="$HOME/.local/bin:$PATH"
 export PATH=$PATH:'"$DIR"'/bin
 # <<< .dotfiles integration <<<'
 
