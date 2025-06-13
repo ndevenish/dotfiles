@@ -160,7 +160,7 @@ function link_dir_contents() {
             FAIL=$((FAIL + 1))
         elif [[ -d "$target" && -f "$item/.external-folder" ]]; then
             # We want to recursively sublink in this folder
-            echo "${G}External, recursing$NC"
+            echo "${GREY}Recursing into hard folder$NC"
             link_dir_contents "$item" "$target" "$indent    "
         elif [[ -d "$target" ]]; then
             echo "${R}Error: Target directory exists. Remove or merge manually.$NC"
