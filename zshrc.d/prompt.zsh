@@ -17,11 +17,13 @@ fi
 ########################################################################
 # Platform signifiers - what is our OS/architecture
 
-case "$(uname -m)" in
-    aarch64|arm64)
-        _platform="💪 "
-    ;;
-esac
+if [[ $(uname) == Linux ]]; then
+    case "$(uname -m)" in
+        aarch64|arm64)
+            _platform="💪 "
+        ;;
+    esac
+fi
 
 ########################################################################
 # Username - if we have an EXPECTED_USER, only show when matches
