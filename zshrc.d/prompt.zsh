@@ -15,6 +15,15 @@ if [[ -n "$SSH_CLIENT" ]]; then
 fi
 
 ########################################################################
+# Platform signifiers - what is our OS/architecture
+
+case "$(uname -m)" in
+    aarch64|arm64)
+        _platform="💪 "
+    ;;
+esac
+
+########################################################################
 # Username - if we have an EXPECTED_USER, only show when matches
 
 # Only show the user if it is different from "expected".
@@ -53,7 +62,7 @@ fi
 _red_cwd="%B%F{red}%1~%f%b"
 _red_prompt_for_failure="%(?.%#.%B%F{red}%#%f%b)"
 
-PROMPT="$_user_host_name$_red_cwd $_git$_red_prompt_for_failure "
+PROMPT="$_platform$_user_host_name$_red_cwd $_git$_red_prompt_for_failure "
 RPROMPT='%F{white}%B# %b$([[ -n $_last_time ]] && echo "($_last_time) ")%*%f'
 
 # # Debugging spacing issues
