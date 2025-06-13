@@ -338,7 +338,7 @@ Linux)
     PLATFORM_FZF="linux"
     PLATFORM_RG="unknown-linux-gnu"
     PLATFORM_BAT="unknown-linux-gnu"
-    PLATFORM_DIFFT="unknown-linux-musl"
+    PLATFORM_DIFFT="unknown-linux-gnu"
     ;;
 Darwin)
     PLATFORM="osx"
@@ -387,6 +387,11 @@ linux-aarch64 | linux-ppc64le | linux-x86_64 | osx-arm64 | osx-x86_64 | win-x86_
     exit 1
     ;;
 esac
+
+# Use musl on x86_64 because fails on RHEL8
+if [[ "$PLATFORM" == linux && "ARCH_BAT" == "x86_64" ]]; then
+    PLATFORM_DIFFT="unknown-linux-musl"
+fi
 
 echo
 echo "${BD}Tooling fetch/update$NC"
