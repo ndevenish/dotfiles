@@ -390,7 +390,7 @@ linux-aarch64 | linux-ppc64le | linux-x86_64 | osx-arm64 | osx-x86_64 | win-x86_
 esac
 
 # Use musl on x86_64 because fails on RHEL8
-if [[ "$PLATFORM" == linux && "ARCH_BAT" == "x86_64" ]]; then
+if [[ "$PLATFORM" == linux && "$ARCH_BAT" == "x86_64" ]]; then
     PLATFORM_DIFFT="unknown-linux-musl"
 fi
 
