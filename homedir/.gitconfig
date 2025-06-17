@@ -8,6 +8,7 @@
 	cia = commit --amend
 	loggo = log --graph --oneline
 	pr = gh pr checkout
+	difft = -c diff.external=difft diff
 [user]
 	name = Nicholas Devenish
 	email = ndevenish@gmail.com
