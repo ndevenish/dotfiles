@@ -480,6 +480,6 @@ fi
 
 if should_download_tool atuin; then
     _at_version="$(get_github_release atuinsh/atuin)"
-    try_download_tool atuin "https://github.com/atuinsh/atuin/releases/download/$_at_version/atuin-${ARCH_BAT}-${PLATFORM_BAT}.tar.gz"
+    try_download_tool atuin "https://github.com/atuinsh/atuin/releases/download/$_at_version/atuin-${ARCH_BAT}-${PLATFORM_DIFFT}.tar.gz"
     # https://github.com/atuinsh/atuin/releases/download/v18.6.1/atuin-installer.sh
 fi
