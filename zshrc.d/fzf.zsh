@@ -1,3 +1,4 @@
+
 # CTRL-R - Paste the selected command from history into the command line
 fzf-fullhistory-widget() {
     # If fzf was not available at configure time, check now
@@ -16,7 +17,8 @@ fzf-fullhistory-widget() {
     # Needed if we don't use fzf fullscreen
     zle reset-prompt
 }
-if [[ "${HISTORY:-fzf}" == fzf ]]; then
+
+if [[ "${HISTORY}" == fzf ]] || ! command -v atuin >/dev/null 2>&1; then
     zle     -N   fzf-fullhistory-widget
     bindkey '^R' fzf-fullhistory-widget
 fi
