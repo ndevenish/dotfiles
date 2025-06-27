@@ -16,5 +16,7 @@ fzf-fullhistory-widget() {
     # Needed if we don't use fzf fullscreen
     zle reset-prompt
 }
-zle     -N   fzf-fullhistory-widget
-bindkey '^R' fzf-fullhistory-widget
+if [[ "${HISTORY:-fzf}" == fzf ]]; then
+    zle     -N   fzf-fullhistory-widget
+    bindkey '^R' fzf-fullhistory-widget
+fi
