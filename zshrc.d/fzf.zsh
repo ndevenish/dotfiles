@@ -11,6 +11,7 @@ fzf-fullhistory-widget() {
         reverser=(tail -r)
     fi
     zle -U "$($reverser ~/.fullhistory \
+        | grep -av '^##EXIT##' \
         | fzf --with-nth 3.. -n 2.. --tiebreak=index --preview 'echo {} | cut -d" " -f 4-' --preview-window=up,3,wrap --bind change:top \
         | cut -d" " -f 4- \
         | sed $'s/[ \t]*$//')"
