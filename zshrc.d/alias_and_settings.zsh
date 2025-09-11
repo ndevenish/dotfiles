@@ -59,3 +59,6 @@ else
     export ZLE_REMOVE_SUFFIX_CHARS=$' \t\n;&'
 fi
 
+set-title () {
+        printf '\033]2;%s\033\\' "${@}"
+}
