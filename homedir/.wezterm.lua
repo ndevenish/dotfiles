@@ -10,6 +10,8 @@ if wezterm.config_builder then
     config = wezterm.config_builder()
 end
 
+config.audible_bell = "Disabled"
+
 -- local solr = wezterm.color.get_builtin_schemes()["Builtin Solarized Light"]
 local solr_light =
     wezterm.color.get_builtin_schemes()["Solarized (light) (terminal.sexy)"]
