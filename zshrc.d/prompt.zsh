@@ -57,6 +57,17 @@ if [[ -n "$DOTFILES_REPO" ]]; then
     _git='%B$(__git_ps1 "(%s) ")%b'
 fi
 
+####
+# jj part of prompt
+_jj=
+_jj_ps1() {
+    if jj root >/dev/null 2>&1; then
+        printf "%%B%%F{blue}JJ%%f%%b "
+    fi
+}
+if command -v jj >/dev/null 2>&1; then
+  _jj='$(_jj_ps1)'
+fi
 ########################################################################
 ########################################################################
 # Form the actual prompt
@@ -66,7 +77,7 @@ fi
 _red_cwd="%B%F{red}%1~%f%b"
 _red_prompt_for_failure="%(?.%#.%B%F{red}%#%f%b)"
 
-PROMPT="$_platform$_user_host_name$_red_cwd $_git$_red_prompt_for_failure "
+PROMPT="$_platform$_user_host_name$_red_cwd $_git$_jj$_red_prompt_for_failure "
 RPROMPT='%F{white}%B# %b$([[ -n $_last_time ]] && echo "($_last_time) ")%*%f'
 
 # # Debugging spacing issues

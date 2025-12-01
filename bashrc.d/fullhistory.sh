@@ -2,7 +2,7 @@
 
 # Custom history file
 export CUSTOM_HISTORY_FILE=$HOME/.fullhistory
-gref() { grep "$@" ~/.fullhistory; }
+gref() { grep -a "$@" ~/.fullhistory; }
 
 if [[ -n ${ZSH_VERSION-} ]]; then
   # ZSH doesn't split command over multiple variables
