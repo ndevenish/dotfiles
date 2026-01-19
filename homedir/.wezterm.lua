@@ -67,7 +67,7 @@ config.keys = {}
 if string.find(wezterm.target_triple, "apple") then
     -- config.font = wezterm.font("SF Mono", {weight = "Medium"})
     config.font = wezterm.font("Menlo", {weight = "Regular"})
-    
+
     -- Match my iTerm2 configuration for now - if we didn't change the general scheme
     if config.color_scheme == "Builtin Light" then
         config.colors = {
