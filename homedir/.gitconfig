@@ -40,3 +40,5 @@
 [core]
 	attributesfile = /home/mep23677/.gitattributes
 
+[rerere]
+	enabled = true

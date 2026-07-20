@@ -164,6 +164,8 @@ table.insert(config.keys, {
     action = wezterm.action.SpawnCommandInNewTab {cwd = wezterm.home_dir},
 })
 
+-- config.exit_behavior = "Hold"
+
 -- and finally, return the configuration to wezterm
 return config
 
